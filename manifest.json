@@ -1,0 +1,10 @@
+{
+  "manifest_version" : 3,
+  "name" : "WAI Sponsorship extension",
+  "description" : "Dummy for testing purposes",
+  "version" : "1.0",
+  "action" : {
+    "default_popup" : "src/hello.html",
+    "default_icon" : "assets/icon.png"
+  }
+}
