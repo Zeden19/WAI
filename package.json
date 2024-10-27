@@ -1,5 +1,10 @@
 {
   "dependencies": {
-    "chrome-types": "^0.1.312"
+    "chrome-types": "^0.1.312",
+    "prettier": "^3.3.3"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.279",
+    "typescript": "^5.6.3"
   }
 }
