@@ -1,5 +1,12 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === "linkedinAdd") {
+    chrome.action.setPopup({ popup: "src/popups/addProfile/hello.html" });
+    chrome.action.openPopup(); // Triggers the popup
+  }
+});
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 const firebaseConfig = {
@@ -15,10 +22,3 @@ const firebaseConfig = {
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 if (firebaseApp) console.log("🫙 Firebase App initiated", firebaseApp);
-
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === "linkedinAdd") {
-    chrome.action.setPopup({ popup: "src/popups/addProfile/hello.html" });
-    chrome.action.openPopup(); // Triggers the popup
-  }
-});
