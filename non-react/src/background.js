@@ -2,10 +2,14 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebas
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onStartup.addListener(() => {
+  console.log(`Service worker online!`);
+});
+
+chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
   if (request.action === "linkedinAdd") {
-    chrome.action.setPopup({ popup: "src/popups/addProfile/hello.html" });
-    chrome.action.openPopup(); // Triggers the popup
+    await chrome.action.setPopup({ popup: "src/popups/addProfile/hello.html" });
+    await chrome.action.openPopup(); // Triggers the popup
   }
 });
 
