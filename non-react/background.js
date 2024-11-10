@@ -1,3 +1,21 @@
+import {initializeApp} from "https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js";
+import {getFirestore} from "https://www.gstatic.com/firebasejs/9.1.1/firebase-firestore.js"
+import {addDoc, collection} from "https://www.gstatic.com/firebasejs/9.1.1/firebase-firestore.js"
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB_Q1OWjnniKrFvFnPcsgfQLkpiYe2lOPE",
+  authDomain: "wai-finance.firebaseapp.com",
+  projectId: "wai-finance",
+  storageBucket: "wai-finance.appspot.com",
+  messagingSenderId: "220165137666",
+  appId: "1:220165137666:web:410e82afcf46152c194e1b",
+  measurementId: "G-0M62Y2VN4G",
+};
+
+const app = initializeApp(firebaseConfig)
+const db = getFirestore(app)
+
 const OFFSCREEN_DOCUMENT_PATH = '/offscreen.html';
 
 // A global promise to avoid concurrency issues
@@ -76,14 +94,34 @@ async function firebaseAuth() {
 
 const handleSignIn = async (sendResponse) => {
   const response = await firebaseAuth();
-  user = response.user;
+  const user = response.user;
   await chrome.storage.local.set({user});
   sendResponse({user})
+}
+
+const addLinkedinProfile = async (url,sendResponse) => {
+  chrome.storage.local.get("user", async (data) => {
+    if (!data.user) {
+      sendResponse({error: "You are not signed in. "})
+      //todo allow for user to sign in if they aren't then add profile in one single click
+      return
+    }
+
+    const newDoc = await addDoc(collection(db, "profiles"), {
+      adderEmail: data.user.email,
+      link: url
+    })
+    sendResponse({newDoc})
+  })
 }
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.message === "signIn") {
     handleSignIn(sendResponse); // this is required, we cannot inline or else we can't return data to sender due to async
+  }
+  if (request.message === "linkedinAdd") {
+    addLinkedinProfile(request.url, sendResponse)
+
   }
   return true;
 })
