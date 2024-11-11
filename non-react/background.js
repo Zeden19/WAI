@@ -1,6 +1,14 @@
 import {initializeApp} from "https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js";
 import {getFirestore} from "https://www.gstatic.com/firebasejs/9.1.1/firebase-firestore.js"
-import {addDoc, collection} from "https://www.gstatic.com/firebasejs/9.1.1/firebase-firestore.js"
+import {
+  addDoc,
+  collection,
+  getDocs,
+  doc,
+  updateDoc,
+  query,
+  where
+} from "https://www.gstatic.com/firebasejs/9.1.1/firebase-firestore.js"
 
 
 const firebaseConfig = {
@@ -96,10 +104,26 @@ const handleSignIn = async (sendResponse) => {
   const response = await firebaseAuth();
   const user = response.user;
   await chrome.storage.local.set({user});
+
+  await addDoc(collection(db, "users"), {
+    email: user.email,
+    profiles: []
+  })
+
   sendResponse({user})
 }
 
-const addLinkedinProfile = async (url,sendResponse) => {
+const hadAddedLink = async (url, sendResponse) => {
+  chrome.storage.local.get("user", async (data) => {
+    const profilesRef = collection(db, "profiles");
+    console.log(url)
+    const q = query(profilesRef, where("adderEmail", "==", data.user.email), where("link", "==", url))
+    const querySnapshot = await getDocs(q);
+    sendResponse({exists: !querySnapshot.empty});
+  })
+}
+
+const addLinkedinProfile = async (url, sendResponse) => {
   chrome.storage.local.get("user", async (data) => {
     if (!data.user) {
       sendResponse({error: "You are not signed in. "})
@@ -119,9 +143,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.message === "signIn") {
     handleSignIn(sendResponse); // this is required, we cannot inline or else we can't return data to sender due to async
   }
+
+  if (request.message === "hasAddedLink") {
+    hadAddedLink(request.url, sendResponse);
+  }
+
   if (request.message === "linkedinAdd") {
     addLinkedinProfile(request.url, sendResponse)
-
   }
   return true;
 })
