@@ -116,7 +116,6 @@ const handleSignIn = async (sendResponse) => {
 const hadAddedLink = async (url, sendResponse) => {
   chrome.storage.local.get("user", async (data) => {
     const profilesRef = collection(db, "profiles");
-    console.log(url)
     const q = query(profilesRef, where("adderEmail", "==", data.user.email), where("link", "==", url))
     const querySnapshot = await getDocs(q);
     sendResponse({exists: !querySnapshot.empty});
@@ -152,4 +151,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     addLinkedinProfile(request.url, sendResponse)
   }
   return true;
+})
+
+chrome.webNavigation.onHistoryStateUpdated.addListener(async function (details) {
+  if (details.url.startsWith("https://www.linkedin.com/in/")) {
+    const [tab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
+    console.log(tab)
+    await chrome.tabs.sendMessage(tab.id, {}); // let content worker know that we're on the right page
+  }
 })

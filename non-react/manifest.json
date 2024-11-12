@@ -8,7 +8,8 @@
   "version": "0.1",
   "permissions": [
     "offscreen",
-    "storage"
+    "storage",
+    "webNavigation"
   ],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'",
@@ -24,7 +25,7 @@
         "scripts/linkedin.js"
       ],
       "matches": [
-        "https://www.linkedin.com/in/*"
+        "https://www.linkedin.com/*"
       ]
     }
   ]
