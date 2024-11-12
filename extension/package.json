@@ -2,9 +2,10 @@
   "name": "wai-chrome-extension",
   "version": "1.0.0",
   "description": "A chrome extension to add linkedin links",
-  "main": "background.js",
+  "main": "src/background.js",
   "scripts": {
-    "build": "webpack --config webpack.config.js"
+    "build": "webpack --config webpack.prod.js",
+    "start": "webpack --watch --config webpack.dev.js"
   },
   "author": "",
   "license": "ISC",
@@ -14,16 +15,11 @@
     "prettier": "^3.3.3"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.26.0",
-    "@babel/preset-react": "^7.25.9",
     "@types/chrome": "^0.0.279",
-    "babel-loader": "^9.2.1",
     "copy-webpack-plugin": "^12.0.2",
-    "css-loader": "^7.1.2",
-    "html-webpack-plugin": "^5.6.3",
-    "style-loader": "^4.0.0",
-    "typescript": "^5.6.3",
     "webpack": "^5.96.1",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "webpack-merge": "^6.0.1",
+    "typescript": "^5.6.3"
   }
 }

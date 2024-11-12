@@ -1,6 +1,6 @@
 const signInButton = document.getElementById('signInButton');
 
-async function signIn() {
+async function signInPopup() {
   const data = await chrome.runtime.sendMessage({message: "signIn"}) // background.js saves user to local storage
   updateUI()
 }
@@ -42,7 +42,7 @@ function updateUI() {
       const button = document.createElement("button");
       button.id = "signInButton";
       button.textContent = "Sign in With Google";
-      button.addEventListener("click", signIn);
+      button.addEventListener("click", signInPopup);
       body.appendChild(button);
     }
   })
