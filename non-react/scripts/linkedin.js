@@ -1,3 +1,48 @@
+function showToast(message) {
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+
+    // Style the toast
+    toast.style.position = 'fixed';
+    toast.style.bottom = '20px';
+    toast.style.right = '20px';
+    toast.style.backgroundColor = '#FFF';
+    toast.style.color = '#000';
+    toast.style.fontWeight = "bold"
+    toast.style.padding = '10px 20px';
+    toast.style.border = "green 1px solid"
+    toast.style.borderRadius = '5px';
+    toast.style.boxShadow = '0px 4px 6px rgba(0, 0, 0, 0.1)';
+    toast.style.zIndex = '1000';
+    toast.style.opacity = '0'; // Start hidden
+    toast.style.transform = 'translateX(100%)'; // Start from the right side
+    toast.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+
+    // Append the toast to the body
+    document.body.appendChild(toast);
+
+    // Trigger transition in
+    setTimeout(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateX(0)';
+    }, 100);
+
+    // Remove the toast after 3 seconds with a fade-out effect
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)'; // Slide out to the right
+    }, 3000);
+
+    // Remove the element after the transition ends
+    toast.addEventListener('transitionend', () => {
+        if (toast.style.opacity === '0') {
+            toast.remove();
+        }
+    });
+}
+
 function addButton() {
   let button = document.getElementById("waiFinance");
   if (!button) {
@@ -19,7 +64,9 @@ function addButton() {
 
       if (data.error) {
         button.disabled = false;
-        // show error stuff shit balls
+        showToast("Could not add link: " + data.error);
+      } else {
+        showToast("Link successfully added!")
       }
 
     })

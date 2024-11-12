@@ -115,6 +115,7 @@ const handleSignIn = async (sendResponse) => {
 
 const hadAddedLink = async (url, sendResponse) => {
   chrome.storage.local.get("user", async (data) => {
+    if (!data.user) return
     const profilesRef = collection(db, "profiles");
     const q = query(profilesRef, where("adderEmail", "==", data.user.email), where("link", "==", url))
     const querySnapshot = await getDocs(q);
