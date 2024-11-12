@@ -3,10 +3,10 @@ import {
   getFirestore, addDoc,
   collection,
   getDocs,
-  doc,
-  updateDoc,
   query,
-  where
+  where,
+  deleteDoc,
+  doc,
 } from "firebase/firestore"
 
 
@@ -138,6 +138,27 @@ const addLinkedinProfile = async (url, sendResponse) => {
   })
 }
 
+const removeLinkedinProfile = async (url, sendResponse) => {
+  chrome.storage.local.get("user", async (data) => {
+    if (!data.user) {
+      sendResponse({error: "You are not signed in. "})
+      //todo allow for user to sign in if they aren't then add profile in one single click
+      return
+    }
+
+    // we probably want some better way to do this...
+    const q = query(collection(db, "profiles"), where("link", "==", url), where("adderEmail", "==", data.user.email));
+    const querySnapshot = await getDocs(q);
+    for (const document of querySnapshot.docs) {
+      await deleteDoc(doc(db, "profiles", document.id));
+    }
+    sendResponse({success: true})
+
+
+  })
+}
+
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.message === "signIn") {
     handleSignIn(sendResponse); // this is required, we cannot inline or else we can't return data to sender due to async
@@ -150,13 +171,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.message === "linkedinAdd") {
     addLinkedinProfile(request.url, sendResponse)
   }
+
+  if (request.message === "linkedinRemove") {
+    removeLinkedinProfile(request.url, sendResponse)
+  }
   return true;
 })
 
 chrome.webNavigation.onHistoryStateUpdated.addListener(async function (details) {
   if (details.url.startsWith("https://www.linkedin.com/in/")) {
     const [tab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
-    console.log(tab)
     await chrome.tabs.sendMessage(tab.id, {}); // let content worker know that we're on the right page
   }
 })

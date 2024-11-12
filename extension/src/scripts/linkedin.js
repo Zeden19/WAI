@@ -1,77 +1,61 @@
 function showToast(message) {
-    // Create toast element
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.textContent = message;
+  // Create toast element
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = message;
 
-    // Style the toast
-    toast.style.position = 'fixed';
-    toast.style.bottom = '20px';
-    toast.style.right = '20px';
-    toast.style.backgroundColor = '#FFF';
-    toast.style.color = '#000';
-    toast.style.fontWeight = "bold"
-    toast.style.padding = '10px 20px';
-    toast.style.border = "green 1px solid"
-    toast.style.borderRadius = '5px';
-    toast.style.boxShadow = '0px 4px 6px rgba(0, 0, 0, 0.1)';
-    toast.style.zIndex = '1000';
-    toast.style.opacity = '0'; // Start hidden
-    toast.style.transform = 'translateX(100%)'; // Start from the right side
-    toast.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+  // Style the toast
+  toast.style.position = 'fixed';
+  toast.style.bottom = '20px';
+  toast.style.right = '20px';
+  toast.style.backgroundColor = '#FFF';
+  toast.style.color = '#000';
+  toast.style.fontWeight = "bold"
+  toast.style.padding = '10px 20px';
+  toast.style.border = "green 1px solid"
+  toast.style.borderRadius = '5px';
+  toast.style.boxShadow = '0px 4px 6px rgba(0, 0, 0, 0.1)';
+  toast.style.zIndex = '1000';
+  toast.style.opacity = '0'; // Start hidden
+  toast.style.transform = 'translateX(100%)'; // Start from the right side
+  toast.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
 
-    // Append the toast to the body
-    document.body.appendChild(toast);
+  // Append the toast to the body
+  document.body.appendChild(toast);
 
-    // Trigger transition in
-    setTimeout(() => {
-        toast.style.opacity = '1';
-        toast.style.transform = 'translateX(0)';
-    }, 100);
+  // Trigger transition in
+  setTimeout(() => {
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateX(0)';
+  }, 100);
 
-    // Remove the toast after 3 seconds with a fade-out effect
-    setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateX(100%)'; // Slide out to the right
-    }, 3000);
+  // Remove the toast after 3 seconds with a fade-out effect
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(100%)'; // Slide out to the right
+  }, 3000);
 
-    // Remove the element after the transition ends
-    toast.addEventListener('transitionend', () => {
-        if (toast.style.opacity === '0') {
-            toast.remove();
-        }
-    });
+  // Remove the element after the transition ends
+  toast.addEventListener('transitionend', () => {
+    if (toast.style.opacity === '0') {
+      toast.remove();
+    }
+  });
 }
 
 function addButton() {
   let button = document.getElementById("waiFinance");
+  let spinner = document.createElement("spinner");
   if (!button) {
     // from testing, page loading is inconsistent, either item 3 or item 4 is the correct element
     const buttonList = document.getElementsByClassName("ph5")[0].children.item(4) ??
       document.getElementsByClassName("ph5")[0].children.item(3);
 
     button = document.createElement("button");
-    button.innerText = "Add URL"
     button.id = "waiFinance"
     button.classList.add("waiFinanceButton");
-    button.addEventListener("click", async function (event) {
-      button.disabled = true;
-      const spinner = document.getElementById("spinner");
-      spinner.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><style>.spinner_HIK5{transform-origin:center;animation:spinner_XVY9 1s cubic-bezier(0.36,.6,.31,1) infinite}@keyframes spinner_XVY9{50%{transform:rotate(180deg)}100%{transform:rotate(360deg)}}</style><circle cx="12" cy="12" r="3"/><g class="spinner_HIK5"><circle cx="4" cy="12" r="3"/><circle cx="20" cy="12" r="3"/></g></svg>`;
-      spinner.style.display = "inline-block";
-      const data = await chrome.runtime.sendMessage({message: "linkedinAdd", url: window.location.href})
-      spinner.style.display = "none";
 
-      if (data.error) {
-        button.disabled = false;
-        showToast("Could not add link: " + data.error);
-      } else {
-        showToast("Link successfully added!")
-      }
-
-    })
-
-    const spinner = document.createElement("span");
+    spinner = document.createElement("span");
     spinner.id = "spinner";
     spinner.style.display = "none";
     spinner.innerHTML = `
@@ -86,9 +70,9 @@ function addButton() {
         <circle cx="20" cy="12" r="3"/>
       </g>
     </svg>`;
-    button.appendChild(spinner);
 
-    buttonList.append(button)
+    button.appendChild(spinner);
+    buttonList.append(button);
 
     const style = document.createElement("style");
     style.innerHTML = `
@@ -125,7 +109,48 @@ function addButton() {
   }
 
   chrome.runtime.sendMessage({message: "hasAddedLink", url: window.location.href}).then((result) => {
-    button.disabled = !!result.exists;
+    console.log(result)
+    if (!result.exists) {
+      button.innerText = "Add URL"
+      button.addEventListener("click", async function (event) {
+        button.disabled = true;
+        if (!spinner) {
+          spinner = document.getElementById("spinner");
+        }
+        spinner.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><style>.spinner_HIK5{transform-origin:center;animation:spinner_XVY9 1s cubic-bezier(0.36,.6,.31,1) infinite}@keyframes spinner_XVY9{50%{transform:rotate(180deg)}100%{transform:rotate(360deg)}}</style><circle cx="12" cy="12" r="3"/><g class="spinner_HIK5"><circle cx="4" cy="12" r="3"/><circle cx="20" cy="12" r="3"/></g></svg>`;
+        spinner.style.display = "inline-block";
+        const data = await chrome.runtime.sendMessage({message: "linkedinAdd", url: window.location.href})
+        spinner.style.display = "none";
+
+        if (data.error) {
+          button.disabled = false;
+          showToast("Could not add link: " + data.error);
+        } else {
+          showToast("Link successfully added!")
+        }
+
+      })
+    } else {
+      button.innerText = "Remove URL"
+      button.addEventListener("click", async function (event) {
+        button.disabled = true;
+        if (!spinner) {
+          spinner = document.getElementById("spinner");
+        }
+        spinner.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><style>.spinner_HIK5{transform-origin:center;animation:spinner_XVY9 1s cubic-bezier(0.36,.6,.31,1) infinite}@keyframes spinner_XVY9{50%{transform:rotate(180deg)}100%{transform:rotate(360deg)}}</style><circle cx="12" cy="12" r="3"/><g class="spinner_HIK5"><circle cx="4" cy="12" r="3"/><circle cx="20" cy="12" r="3"/></g></svg>`;
+        spinner.style.display = "inline-block";
+        const data = await chrome.runtime.sendMessage({message: "linkedinRemove", url: window.location.href})
+        spinner.style.display = "none";
+
+        if (data.error) {
+          button.disabled = false;
+          showToast("Could not remove link: " + data.error);
+        } else {
+          showToast("Link successfully removed!")
+        }
+
+      })
+    }
   });
 }
 
