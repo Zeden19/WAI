@@ -7,6 +7,7 @@ import {
   where,
   deleteDoc,
   doc,
+  setDoc,
 } from "firebase/firestore"
 
 
@@ -104,10 +105,10 @@ const handleSignIn = async (sendResponse) => {
   const user = response.user;
   await chrome.storage.local.set({user});
 
-  await addDoc(collection(db, "users"), {
+  await setDoc(doc(db, "users", user.email), {
     email: user.email,
     profiles: []
-  })
+  }, {merge: true})
 
   sendResponse({user})
 }

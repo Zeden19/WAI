@@ -108,51 +108,61 @@ function addButton() {
     document.head.appendChild(style);
   }
 
+  button.disabled = false;
   chrome.runtime.sendMessage({message: "hasAddedLink", url: window.location.href}).then((result) => {
-    console.log(result)
-    if (!result.exists) {
-      button.innerText = "Add URL"
-      button.addEventListener("click", async function (event) {
+      let action = result.exists ? "Remove" : "Add";
+      let message = result.exists ? "linkedinRemove" : "linkedinAdd";
+
+      button.innerText = `${action} URL`;
+
+      // we use onclick here instead of adding a event listener to prevent duplicate clicks
+      button.onclick = async () => {
         button.disabled = true;
         if (!spinner) {
           spinner = document.getElementById("spinner");
         }
-        spinner.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><style>.spinner_HIK5{transform-origin:center;animation:spinner_XVY9 1s cubic-bezier(0.36,.6,.31,1) infinite}@keyframes spinner_XVY9{50%{transform:rotate(180deg)}100%{transform:rotate(360deg)}}</style><circle cx="12" cy="12" r="3"/><g class="spinner_HIK5"><circle cx="4" cy="12" r="3"/><circle cx="20" cy="12" r="3"/></g></svg>`;
-        spinner.style.display = "inline-block";
-        const data = await chrome.runtime.sendMessage({message: "linkedinAdd", url: window.location.href})
-        spinner.style.display = "none";
+
+        showSpinner();
+        const data = await chrome.runtime.sendMessage({message, url: window.location.href});
+        hideSpinner();
 
         if (data.error) {
           button.disabled = false;
-          showToast("Could not add link: " + data.error);
+          showToast(`Could not ${action.toLowerCase()} link: ${data.error}`);
         } else {
-          showToast("Link successfully added!")
-        }
+          showToast(`Link successfully ${action.toLowerCase()}ed!`);
 
-      })
-    } else {
-      button.innerText = "Remove URL"
-      button.addEventListener("click", async function (event) {
-        button.disabled = true;
-        if (!spinner) {
-          spinner = document.getElementById("spinner");
-        }
-        spinner.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><style>.spinner_HIK5{transform-origin:center;animation:spinner_XVY9 1s cubic-bezier(0.36,.6,.31,1) infinite}@keyframes spinner_XVY9{50%{transform:rotate(180deg)}100%{transform:rotate(360deg)}}</style><circle cx="12" cy="12" r="3"/><g class="spinner_HIK5"><circle cx="4" cy="12" r="3"/><circle cx="20" cy="12" r="3"/></g></svg>`;
-        spinner.style.display = "inline-block";
-        const data = await chrome.runtime.sendMessage({message: "linkedinRemove", url: window.location.href})
-        spinner.style.display = "none";
-
-        if (data.error) {
+          // Toggle action and message for next click
+          if (action === "Add") {
+            action = "Remove";
+            message = "linkedinRemove";
+          } else {
+            action = "Add";
+            message = "linkedinAdd";
+          }
+          button.innerText = `${action} URL`;
           button.disabled = false;
-          showToast("Could not remove link: " + data.error);
-        } else {
-          showToast("Link successfully removed!")
         }
-
-      })
+      }
     }
-  });
+  );
+
+
+  function showSpinner() {
+    spinner.innerHTML = `
+    <svg width="15" height="15" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <style>.spinner{transform-origin:center;animation:spin 1s cubic-bezier(0.36,.6,.31,1) infinite}@keyframes spin{50%{transform:rotate(180deg)}100%{transform:rotate(360deg)}}</style>
+      <circle cx="12" cy="12" r="3"/>
+      <g class="spinner"><circle cx="4" cy="12" r="3"/><circle cx="20" cy="12" r="3"/></g>
+    </svg>`;
+    spinner.style.display = "inline-block";
+  }
+
+  function hideSpinner() {
+    spinner.style.display = "none";
+  }
 }
+
 
 // in case we start on a profile page
 if (window.location.href.startsWith("https://www.linkedin.com/in/")) {
