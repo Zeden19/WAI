@@ -6,7 +6,9 @@ module.exports = {
     background: './src/background.js',
     offscreen: './src/offscreen.js',
     signInPopup: './src/signInPopup.js',
-    linkedin: "./src/scripts/linkedin.js"
+    linkedin: "./src/scripts/linkedin.js",
+    urlButton: "./src/scripts/urlButton.js",
+    shareButton: "./src/scripts/shareButton.js",
   },
   output: {
     filename: '[name].js',

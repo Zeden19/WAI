@@ -111,11 +111,16 @@ const handleSignIn = async (sendResponse) => {
   }, {merge: true})
 
   sendResponse({user})
+  // todo send a response to content worker to add the button iff they are on a profile page
+
 }
 
 const hadAddedLink = async (url, sendResponse) => {
   chrome.storage.local.get("user", async (data) => {
-    if (!data.user) return
+    if (!data.user) {
+      sendResponse({error: "User not signed in"})
+      return
+    }
     const profilesRef = collection(db, "profiles");
     const q = query(profilesRef, where("adderEmail", "==", data.user.email), where("link", "==", url))
     const querySnapshot = await getDocs(q);
