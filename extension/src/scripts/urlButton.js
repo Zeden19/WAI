@@ -50,7 +50,9 @@ export function addUrlButton() {
     let button = document.getElementById("urlButton");
     let spinner = document.createElement("spinner");
     // from testing, page loading is inconsistent, either item 3 or item 4 is the correct element
-    const buttonList = document.getElementsByClassName("DqzMycxxLCGPJsKFsTFDTuGHooUBannmjIzpml")[0];
+    const buttonList = document.getElementsByClassName("ph5")[0].children.item(4) ??
+      document.getElementsByClassName("ph5")[0].children.item(3);
+
     if (!button) {
       button = document.createElement("button");
       button.id = "urlButton"
@@ -122,18 +124,18 @@ export function addUrlButton() {
     );
 
 
-  function showSpinner() {
-    spinner.innerHTML = `
+    function showSpinner() {
+      spinner.innerHTML = `
     <svg width="15" height="15" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <style>.spinner{transform-origin:center;animation:spin 1s cubic-bezier(0.36,.6,.31,1) infinite}@keyframes spin{50%{transform:rotate(180deg)}100%{transform:rotate(360deg)}}</style>
       <circle cx="12" cy="12" r="3"/>
       <g class="spinner"><circle cx="4" cy="12" r="3"/><circle cx="20" cy="12" r="3"/></g>
     </svg>`;
-    spinner.style.display = "inline-block";
-  }
+      spinner.style.display = "inline-block";
+    }
 
-  function hideSpinner() {
-    spinner.style.display = "none";
-  }
+    function hideSpinner() {
+      spinner.style.display = "none";
+    }
   }, 2000)
 }

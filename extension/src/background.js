@@ -26,6 +26,7 @@ const db = getFirestore(app)
 
 const OFFSCREEN_DOCUMENT_PATH = '/offscreen.html';
 
+
 // A global promise to avoid concurrency issues
 let creating;
 
@@ -100,6 +101,7 @@ async function firebaseAuth() {
   return auth;
 }
 
+
 const handleSignIn = async (sendResponse) => {
   const response = await firebaseAuth();
   const user = response.user;
@@ -159,13 +161,29 @@ const removeLinkedinProfile = async (url, sendResponse) => {
       await deleteDoc(doc(db, "profiles", document.id));
     }
     sendResponse({success: true})
-
-
   })
+}
+
+// can we cache this information? doing this everytime for each linkedin page seems inefficient
+// i have no experience with caching so i need to figure dat out
+const getEmailList = async (sendResponse) => {
+  chrome.storage.local.get("user", async (data) => {
+    if (!data.user) {
+      sendResponse({error: "You are not signed in. "})
+      return
+    }
+    const querySnapshot = await getDocs(collection(db, "users"));
+    const emailList = querySnapshot.docs.map((doc) => doc.id);
+
+    // removing the currently logged in user's email
+    emailList.splice(emailList.indexOf(data.user.email), 1);
+    sendResponse({emailList});
+  });
 }
 
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  // could use switch statement
   if (request.message === "signIn") {
     handleSignIn(sendResponse); // this is required, we cannot inline or else we can't return data to sender due to async
   }
@@ -180,6 +198,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
   if (request.message === "linkedinRemove") {
     removeLinkedinProfile(request.url, sendResponse)
+  }
+
+  if (request.message === "getEmailList") {
+    getEmailList(sendResponse);
   }
   return true;
 })
