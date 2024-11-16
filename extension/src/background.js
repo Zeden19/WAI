@@ -1,13 +1,16 @@
 import {initializeApp} from "firebase/app"
 import {
-  getFirestore, addDoc,
+  addDoc,
+  arrayUnion,
   collection,
-  getDocs,
-  query,
-  where,
   deleteDoc,
   doc,
+  getDocs,
+  getFirestore,
+  query,
   setDoc,
+  updateDoc,
+  where
 } from "firebase/firestore"
 
 
@@ -81,7 +84,7 @@ function getAuth() {
 async function firebaseAuth() {
   await setupOffscreenDocument(OFFSCREEN_DOCUMENT_PATH);
 
-  const auth = await getAuth()
+  return await getAuth()
     .then((auth) => {
       console.log('User Authenticated', auth);
       return auth;
@@ -96,9 +99,13 @@ async function firebaseAuth() {
         return err;
       }
     })
-    .finally(closeOffscreenDocument)
+    .finally(closeOffscreenDocument);
+}
 
-  return auth;
+async function getProfile(email, url) {
+  const profilesRef = collection(db, "profiles");
+  const q = query(profilesRef, where("adderEmail", "==", email), where("link", "==", url))
+  return await getDocs(q);
 }
 
 
@@ -123,9 +130,7 @@ const hadAddedLink = async (url, sendResponse) => {
       sendResponse({error: "User not signed in"})
       return
     }
-    const profilesRef = collection(db, "profiles");
-    const q = query(profilesRef, where("adderEmail", "==", data.user.email), where("link", "==", url))
-    const querySnapshot = await getDocs(q);
+    const querySnapshot = await getProfile(data.user.email, url);
     sendResponse({exists: !querySnapshot.empty});
   })
 }
@@ -140,10 +145,11 @@ const addLinkedinProfile = async (url, sendResponse) => {
 
     const newDoc = await addDoc(collection(db, "profiles"), {
       adderEmail: data.user.email,
-      link: url
-    })
+      link: url,
+      sharedWith: []
+    });
     sendResponse({newDoc})
-  })
+  });
 }
 
 const removeLinkedinProfile = async (url, sendResponse) => {
@@ -154,9 +160,7 @@ const removeLinkedinProfile = async (url, sendResponse) => {
       return
     }
 
-    // we probably want some better way to do this...
-    const q = query(collection(db, "profiles"), where("link", "==", url), where("adderEmail", "==", data.user.email));
-    const querySnapshot = await getDocs(q);
+    const querySnapshot = await getProfile(data.user.email, url);
     for (const document of querySnapshot.docs) {
       await deleteDoc(doc(db, "profiles", document.id));
     }
@@ -181,28 +185,62 @@ const getEmailList = async (sendResponse) => {
   });
 }
 
+const shareProfile = async (url, recipientEmail, sendResponse) => {
+  chrome.storage.local.get("user", async (data) => {
+    if (!data.user) {
+      sendResponse({error: "You are not signed in. "});
+      return;
+    }
+
+    const querySnapshot = await getProfile(data.user.email, url)
+
+    if (querySnapshot.empty) {
+      sendResponse({error: "You have not added this link"})
+      return
+    }
+
+    const profileId = querySnapshot.docs[0].id
+    const profileRef = doc(db, "profiles", profileId);
+    await updateDoc(profileRef, {
+      sharedWith: arrayUnion(recipientEmail)
+    })
+
+    sendResponse({success: true});
+  });
+}
+
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  // could use switch statement
-  if (request.message === "signIn") {
-    handleSignIn(sendResponse); // this is required, we cannot inline or else we can't return data to sender due to async
+  switch (request.message) {
+    case "signIn":
+      handleSignIn(sendResponse); // this is required, we cannot inline or else we can't return data to sender due to async
+      break;
+
+    case "hasAddedLink":
+      hadAddedLink(request.url, sendResponse);
+      break;
+
+    case "linkedinAdd":
+      addLinkedinProfile(request.url, sendResponse);
+      break;
+
+    case "linkedinRemove":
+      removeLinkedinProfile(request.url, sendResponse);
+      break;
+
+    case "getEmailList":
+      getEmailList(sendResponse);
+      break;
+
+    case "shareProfile":
+      shareProfile(request.url, request.email, sendResponse);
+      break;
+
+    default:
+      // Handle unknown message type if necessary
+      console.warn(`Unknown message type: ${request.message}`);
   }
 
-  if (request.message === "hasAddedLink") {
-    hadAddedLink(request.url, sendResponse);
-  }
-
-  if (request.message === "linkedinAdd") {
-    addLinkedinProfile(request.url, sendResponse)
-  }
-
-  if (request.message === "linkedinRemove") {
-    removeLinkedinProfile(request.url, sendResponse)
-  }
-
-  if (request.message === "getEmailList") {
-    getEmailList(sendResponse);
-  }
   return true;
 })
 

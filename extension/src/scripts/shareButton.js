@@ -1,3 +1,5 @@
+import {showToast} from "./linkedin";
+
 let emailList = null;
 let showShareList = false;
 let button = null;
@@ -65,6 +67,13 @@ function addShareList() {
 
     div.onmouseout = () => {
       div.style.backgroundColor = "white";
+    }
+
+    div.onclick = async () => {
+      const data = await chrome.runtime.sendMessage({message: "shareProfile", url: window.location.href, email: email});
+      if (data.error) showToast("Could not share Link: " + data.error, "error");
+      else showToast(`Link successfully shared with ${email}`, "success");
+      removeShareList();
     }
     shareContainer.appendChild(div);
   })
