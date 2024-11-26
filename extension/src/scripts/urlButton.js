@@ -32,6 +32,10 @@ export function addUrlButton() {
 
       button.appendChild(spinner);
       buttonList.append(button);
+
+      // linkedin page gets messed up when we add more buttons, so make sure it can wrap
+      buttonList.style.flexWrap = "wrap"
+      buttonList.style.rowGap = "10px"
     }
 
     button.disabled = false;

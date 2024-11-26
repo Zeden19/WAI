@@ -75,8 +75,7 @@ style.innerHTML = `
     opacity: 0; /* Start hidden */
     transform: translateX(100%); /* Start from the right side */
     transition: opacity 0.3s ease, transform 0.3s ease;
-  }`
-;
+  }`;
 
 document.head.appendChild(style);
 
