@@ -147,6 +147,7 @@ const addLinkedinProfile = async (url, sendResponse) => {
     const newDoc = await addDoc(collection(db, "profiles"), {
       adderEmail: data.user.email,
       link: url,
+      notes: [],
       sharedWith: []
     });
     sendResponse({newDoc})

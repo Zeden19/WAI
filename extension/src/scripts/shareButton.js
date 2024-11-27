@@ -6,6 +6,7 @@ let button = null;
 let container = null;
 let shareContainer = null;
 
+// Main Renderer Function
 export function addShareButton(urlButton) {
   if (!container) {
     container = document.createElement("div");
