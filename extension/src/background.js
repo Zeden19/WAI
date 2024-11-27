@@ -191,6 +191,8 @@ const getEmailList = async (sendResponse, url) => {
       email,
       hasAdded: sharedWith.includes(email)
     }))
+
+    console.log(emailListObject)
     sendResponse({emailList: emailListObject});
   })
 }

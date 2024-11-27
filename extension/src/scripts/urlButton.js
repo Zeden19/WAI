@@ -6,7 +6,7 @@ export function addUrlButton() {
     let button = document.getElementById("urlButton");
     let spinner = document.createElement("spinner");
     // from testing, page loading is inconsistent, either item 3 or item 4 is the correct element
-    const buttonList = document.getElementsByClassName("ph5")[0].children.item(4) ??
+    const buttonList = document.getElementsByClassName("ph5")[0]?.children.item(4) ??
       document.getElementsByClassName("ph5")[0].children.item(3);
 
     if (!button) {
