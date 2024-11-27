@@ -54,22 +54,23 @@ function addShareList() {
     shareContainer.style.overflow = "hidden";
   }
 
-  const div = document.createElement("div");
-  div.style.color = "black";
-  div.style.padding = "3px";
-  div.style.cursor = "pointer";
-  div.onmouseover = () => {
-    div.style.backgroundColor = "#CCC";
-  }
-  div.onmouseout = () => {
-    div.style.backgroundColor = "white";
-  }
 
   if (emailList.length === 0) {
-    div.style.border = "1px solid black";
-    div.innerText = "No emails";
+    const div = document.createElement("div");
+    div.innerText = "No emails to share to"
+    shareContainer.appendChild(div);
   } else {
     emailList.map((email, index) => {
+      const div = document.createElement("div");
+      div.style.color = "black";
+      div.style.padding = "3px";
+      div.style.cursor = "pointer";
+      div.onmouseover = () => {
+        div.style.backgroundColor = "#CCC";
+      }
+      div.onmouseout = () => {
+        div.style.backgroundColor = "white";
+      }
       div.style.borderBottom = `${index !== emailList.length - 1 && "1px solid black"}`;
       div.innerText = email.email + `${email.hasAdded ? "-" : "+"}`;
 
@@ -82,12 +83,13 @@ function addShareList() {
         });
         if (data.error) showToast(`"Could not ${email.hasAdded ? 'remove shared' : 'share'} link: ` + data.error, "error");
         else showToast(`Link successfully ${email.hasAdded ? 'removed' : 'shared'} with ${email.email}`, "success");
+        email.hasAdded = !email.hasAdded
         removeShareList();
       }
+      shareContainer.appendChild(div);
     })
   }
 
-  shareContainer.appendChild(div);
   container.appendChild(shareContainer);
 }
 
