@@ -1,0 +1,38 @@
+import { collection, doc, getDocs, query, where } from "firebase/firestore";
+import db from "../background";
+import { getLoggedInUser } from "./utils";
+
+
+const profilesRef = db.collection("profiles");
+const notesRef = db.collection("notes");
+
+
+async function getNote(email, url) {
+
+    // Change
+    const q = query(profilesRef, where("adderEmail", "==", email), where("link", "==", url))
+    return await getDocs(q);
+}
+
+
+export const getNotesUserList = async(email) => {
+    return await profilesRef.where("adderEmail", "==", email).get();
+}
+
+export const getNotesProfileList = async (linkedInProfile, sendResponse) => {S
+    const email = getLoggedInUser(sendResponse);
+    if(email === false){ return }
+
+    // Check Perms
+
+
+}
+
+
+export const setNote = () => { }
+
+export const updateNotes = () => {
+
+}
+
+export const removeNote = () => { }

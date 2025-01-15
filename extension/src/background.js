@@ -1,18 +1,9 @@
-import {initializeApp} from "firebase/app"
-import {
-  addDoc,
-  arrayUnion,
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  getFirestore,
-  query,
-  setDoc,
-  updateDoc,
-  where,
-  arrayRemove
-} from "firebase/firestore"
+import { initializeApp } from "firebase/app"
+import { doc, getFirestore, setDoc } from "firebase/firestore"
+
+import { getEmailList, removeShareProfile, setShareProfile} from "./backgroundTasks/shareUsers";
+import { getLinkedInProfile, setLinkedInProfile, removeLinkedinProfile} from "./backgroundTasks/profiles";
+import { getNotesProfileList, setNote, removeNote} from "./backgroundTasks/notes";
 
 
 const firebaseConfig = {
@@ -28,7 +19,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
 
-const OFFSCREEN_DOCUMENT_PATH = '/offscreen.html';
+const OFFSCREEN_DOCUMENT_PATH = './offscreen.html';
 
 
 // A global promise to avoid concurrency issues
@@ -44,7 +35,6 @@ async function hasDocument() {
     (c) => c.url === chrome.runtime.getURL(OFFSCREEN_DOCUMENT_PATH)
   );
 }
-
 async function setupOffscreenDocument(path) {
   // If we do not have a document, we are already setup and can skip
   if (!(await hasDocument())) {
@@ -64,14 +54,12 @@ async function setupOffscreenDocument(path) {
     }
   }
 }
-
 async function closeOffscreenDocument() {
   if (!(await hasDocument())) {
     return;
   }
   await chrome.offscreen.closeDocument();
 }
-
 function getAuth() {
   return new Promise(async (resolve, reject) => {
     const auth = await chrome.runtime.sendMessage({
@@ -81,7 +69,6 @@ function getAuth() {
     auth?.name !== 'FirebaseError' ? resolve(auth) : reject(auth);
   })
 }
-
 async function firebaseAuth() {
   await setupOffscreenDocument(OFFSCREEN_DOCUMENT_PATH);
 
@@ -102,14 +89,6 @@ async function firebaseAuth() {
     })
     .finally(closeOffscreenDocument);
 }
-
-
-async function getProfile(email, url) {
-  const profilesRef = collection(db, "profiles");
-  const q = query(profilesRef, where("adderEmail", "==", email), where("link", "==", url))
-  return await getDocs(q);
-}
-
 const handleSignIn = async (sendResponse) => {
   const response = await firebaseAuth();
   const user = response.user;
@@ -117,7 +96,9 @@ const handleSignIn = async (sendResponse) => {
 
   await setDoc(doc(db, "users", user.email), {
     email: user.email,
-    urlsReceivedShared: []
+    photoURL: user.photoURL,
+    accountsSharedWith: [], // users shouldn't be able to write to their own, only delete and read
+    displayName: user.displayName,
   }, {merge: true})
 
   sendResponse({user})
@@ -125,126 +106,6 @@ const handleSignIn = async (sendResponse) => {
 
 }
 
-const hadAddedLink = async (url, sendResponse) => {
-  chrome.storage.local.get("user", async (data) => {
-    if (!data.user) {
-      sendResponse({error: "User not signed in"})
-      return
-    }
-    const querySnapshot = await getProfile(data.user.email, url);
-    sendResponse({exists: !querySnapshot.empty});
-  })
-}
-
-const addLinkedinProfile = async (url, sendResponse) => {
-  chrome.storage.local.get("user", async (data) => {
-    if (!data.user) {
-      sendResponse({error: "You are not signed in. "})
-      //todo allow for user to sign in if they aren't then add profile in one single click
-      return
-    }
-
-    const newDoc = await addDoc(collection(db, "profiles"), {
-      adderEmail: data.user.email,
-      link: url,
-      notes: [],
-      sharedWith: []
-    });
-    sendResponse({newDoc})
-  });
-}
-
-const removeLinkedinProfile = async (url, sendResponse) => {
-  chrome.storage.local.get("user", async (data) => {
-    if (!data.user) {
-      sendResponse({error: "You are not signed in. "})
-      //todo allow for user to sign in if they aren't then add profile in one single click
-      return
-    }
-
-    const querySnapshot = await getProfile(data.user.email, url);
-    for (const document of querySnapshot.docs) {
-      await deleteDoc(doc(db, "profiles", document.id));
-    }
-    sendResponse({success: true})
-  })
-}
-
-// can we cache this information? doing this everytime for each linkedin page seems inefficient
-// i have no experience with caching so i need to figure dat out
-const getEmailList = async (sendResponse, url) => {
-  chrome.storage.local.get("user", async (data) => {
-    if (!data.user) {
-      sendResponse({error: "You are not signed in. "})
-      return
-    }
-    const querySnapshot = await getDocs(collection(db, "users"));
-    const emailList = querySnapshot.docs.map((doc) => (doc.id));
-
-    const queryProfiles = await getDocs(collection(db, "profiles"));
-    const sharedWith = queryProfiles.docs.find(profile => profile.data().link === url).data().sharedWith;
-
-    // removing the currently logged-in user's email
-    emailList.splice(emailList.indexOf(data.user.email), 1);
-
-    // marking if the user has been added to the url
-    const emailListObject = emailList.map(email => ({
-      email,
-      hasAdded: sharedWith.includes(email)
-    }))
-
-    console.log(emailListObject)
-    sendResponse({emailList: emailListObject});
-  })
-}
-
-const shareProfile = async (url, recipientEmail, sendResponse) => {
-  chrome.storage.local.get("user", async (data) => {
-    if (!data.user) {
-      sendResponse({error: "You are not signed in. "});
-      return;
-    }
-
-    const querySnapshot = await getProfile(data.user.email, url);
-
-    if (querySnapshot.empty) {
-      sendResponse({error: "You have not added this link"})
-      return
-    }
-
-    const profileId = querySnapshot.docs[0].id
-    const profileRef = doc(db, "profiles", profileId);
-    await updateDoc(profileRef, {
-      sharedWith: arrayUnion(recipientEmail)
-    })
-
-    sendResponse({success: true});
-  });
-}
-
-const removeShareProfile = async (url, recipientEmail, sendResponse) => {
-  chrome.storage.local.get("user", async (data) => {
-    if (!data.user) {
-      sendResponse({error: "You are not signed in. "});
-      return;
-    }
-
-    const querySnapshot = await getProfile(data.user.email, url);
-
-    if (querySnapshot.empty) {
-      sendResponse({error: "You have not added this link"})
-      return
-    }
-
-    const profileId = querySnapshot.docs[0].id
-    const profileRef = doc(db, "profiles", profileId);
-    await updateDoc(profileRef, {
-      sharedWith: arrayRemove(recipientEmail)
-    })
-
-    sendResponse({success: true});
-  });
-}
 
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -253,29 +114,45 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       handleSignIn(sendResponse); // this is required, we cannot inline or else we can't return data to sender due to async
       break;
 
+      
     case "hasAddedLink":
-      hadAddedLink(request.url, sendResponse);
+      getLinkedInProfile(request.url, sendResponse);
       break;
 
     case "linkedinAdd":
-      addLinkedinProfile(request.url, sendResponse);
+      setLinkedInProfile(request.url, sendResponse);
       break;
 
     case "linkedinRemove":
       removeLinkedinProfile(request.url, sendResponse);
       break;
 
+
     case "getEmailList":
       getEmailList(sendResponse, request.url);
       break;
 
     case "shareProfile":
-      shareProfile(request.url, request.email, sendResponse);
+      setShareProfile(request.url, request.email, sendResponse);
       break;
 
     case "removeShareProfile":
       removeShareProfile(request.url, request.email, sendResponse);
       break;
+
+
+    case "getNoteList":
+      getNotesProfileList(request.url, request.email, sendResponse);
+      break;
+
+    case "removeNote":
+      removeNote(request.url, request.email, request.noteID, sendResponse);
+      break;
+
+    case "setNote":
+      setNote(request.url, request.email, sendResponse);
+      break;
+
 
     default:
       // Handle unknown message type if necessary
@@ -291,3 +168,11 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(async function (details) 
     await chrome.tabs.sendMessage(tab.id, {}); // let content worker know that we're on the right page
   }
 })
+
+
+
+
+
+
+
+export default db;

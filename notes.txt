@@ -1,0 +1,5 @@
+Notes for Ethan bc he has two braincells to run together
+
+urlButton is the main renderer function where everything gets rendered. then each item or button is added into its logic
+
+linkedin is the parent file to urlButton for some reason

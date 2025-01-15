@@ -1,39 +1,11 @@
-import {addUrlButton} from "./urlButton";
+import {mainRenderer, mainUnRenderer} from "./mainRenderer";
 
-export function showToast(message, type = "default") {
-  // Create toast element
-  const toast = document.createElement('div');
-  toast.className = 'toast';
-  toast.textContent = message;
-  // Append the toast to the body
-  document.body.appendChild(toast);
-
-  toast.style.borderLeft = `7px solid ${type === "error" ? "error" : type === "success" ? "green" : "gray"}`;
-
-  // Trigger transition in
-  setTimeout(() => {
-    toast.style.opacity = '1';
-    toast.style.transform = 'translateX(0)';
-  }, 100);
-
-  // Remove the toast after 3 seconds with a fade-out effect
-  setTimeout(() => {
-    toast.style.opacity = '0';
-    toast.style.transform = 'translateX(100%)'; // Slide out to the right
-  }, 3000);
-
-  // Remove the element after the transition ends
-  toast.addEventListener('transitionend', () => {
-    if (toast.style.opacity === '0') {
-      toast.remove();
-    }
-  });
-}
 
 const style = document.createElement("style");
 style.innerHTML = `
   .waiFinanceButton {
     border: 1px solid rgb(10, 102, 194);
+    height: 3.2rem;
     border-radius: 1.6rem;
     color: rgb(10, 102, 194);
     font-weight: bold;
@@ -79,11 +51,12 @@ style.innerHTML = `
 
 document.head.appendChild(style);
 
+
 // in case we start on a profile page
 if (window.location.href.startsWith("https://www.linkedin.com/in/")) {
   chrome.storage.local.get("user", (data) => {
     if (!data.user) return
-    addUrlButton()
+    mainRenderer()
   })
 }
 
@@ -92,7 +65,9 @@ chrome.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {
     chrome.storage.local.get("user", (data) => {
       if (!data.user) return
-      addUrlButton();
+    
+      mainUnRenderer();
+      mainRenderer();
       sendResponse({});
     })
   }

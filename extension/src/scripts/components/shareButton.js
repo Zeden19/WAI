@@ -1,4 +1,4 @@
-import {showToast} from "./linkedin";
+import {showToast} from "./toast";
 
 let emailList = null;
 let showShareList = false;
