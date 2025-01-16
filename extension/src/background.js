@@ -122,33 +122,30 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             break;
 
         case "hasAddedLink":
-            getLinkedInProfile(request.url, sendResponse);
+            getLinkedInProfile(sendResponse);
             break;
-
         case "linkedinAdd":
-            setLinkedInProfile(request.url, sendResponse);
+            setLinkedInProfile(sendResponse);
+            break;
+        case "linkedinRemove":
+            deleteLinkedinProfile(sendResponse);
             break;
 
-        case "linkedinRemove":
-            deleteLinkedinProfile(request.url, sendResponse);
-            break;
 
         case "getEmailList":
-            getEmailList(request.url, sendResponse);
+            getEmailList(sendResponse);
             break;
-
         case "shareProfile":
-            setShareProfile(request.url, request.email, sendResponse);
+            setShareProfile(request.email, sendResponse);
+            break;
+        case "removeShareProfile":
+            removeShareProfile(request.email, sendResponse);
             break;
 
-        case "removeShareProfile":
-            removeShareProfile(request.url, request.email, sendResponse);
-            break;
 
         case "getNoteList":
-            getNotesProfileList(request.url, request.email, sendResponse);
+            getNotesProfileList(sendResponse);
             break;
-
         case "removeNote":
             removeNote(
                 request.url,
@@ -157,10 +154,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 sendResponse,
             );
             break;
-
         case "setNote":
-            setNote(request.url, request.email, sendResponse);
+            setNote(request.noteContent, sendResponse);
             break;
+
 
         default:
             // Handle unknown message type if necessary

@@ -28,7 +28,10 @@ export const getNotesProfileList = async (linkedInProfile, sendResponse) => {
     // Check Perms
 };
 
-export const setNote = () => {};
+export const setNote = () => {
+    
+
+};
 
 export const updateNotes = () => {};
 

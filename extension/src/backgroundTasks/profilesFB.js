@@ -12,7 +12,7 @@ import {
     and,
 } from "firebase/firestore";
 import db from "../firebase";
-import { getLoggedInUser, getProfileSlug } from "./utils";
+import { getLoggedInUser, getProfileSlug, getCurrentTabUrl } from "./utils";
 
 const profilesRef = collection(db, "profiles");
 const notesRef = collection(db, "notes");
@@ -44,7 +44,8 @@ export async function _getLinkedInProfile(adderEmail, url) {
 }
 
 // GET, SET AND DELETE
-export const getLinkedInProfile = async (url, sendResponse) => {
+export const getLinkedInProfile = async (sendResponse) => {
+    const url = await getCurrentTabUrl();
     const data = await getLoggedInUser(sendResponse);
     if (!data) return;
 
@@ -52,7 +53,8 @@ export const getLinkedInProfile = async (url, sendResponse) => {
     sendResponse({ exists: !querySnapshot.empty });
 };
 
-export const setLinkedInProfile = async (url, sendResponse) => {
+export const setLinkedInProfile = async (sendResponse) => {
+    const url = await getCurrentTabUrl();
     const data = await getLoggedInUser(sendResponse);
     if (!data) return;
 
@@ -80,7 +82,8 @@ export const setLinkedInProfile = async (url, sendResponse) => {
 };
 
 // need to be updated
-export const deleteLinkedinProfile = async (url, sendResponse) => {
+export const deleteLinkedinProfile = async (sendResponse) => {
+    const url = await getCurrentTabUrl();
     const data = await getLoggedInUser(sendResponse);
     if (!data) return;
 

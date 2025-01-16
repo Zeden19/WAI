@@ -13,7 +13,8 @@ import { _getLinkedInProfile } from "./profilesFB";
 /* Sharing Feature */
 // can we cache this information? doing this everytime for each linkedin page seems inefficient
 // i have no experience with caching so i need to figure dat out
-export const getEmailList = async (url, sendResponse) => {
+export const getEmailList = async (sendResponse) => {
+    const url = await getCurrentTabUrl();
     const data = await getLoggedInUser(sendResponse);
     if (!data) return;
 
@@ -37,7 +38,8 @@ export const getEmailList = async (url, sendResponse) => {
     sendResponse({ emailList: emailListObject });
 };
 
-export const setShareProfile = async (url, recipientEmail, sendResponse) => {
+export const setShareProfile = async (recipientEmail, sendResponse) => {
+    const url = await getCurrentTabUrl();
     const { user } = await getLoggedInUser(sendResponse);
     const adderEmail = user.email;
     const querySnapshot = await _getLinkedInProfile(adderEmail, url);
@@ -54,7 +56,8 @@ export const setShareProfile = async (url, recipientEmail, sendResponse) => {
     sendResponse({ success: true });
 };
 
-export const removeShareProfile = async (url, recipientEmail, sendResponse) => {
+export const removeShareProfile = async (recipientEmail, sendResponse) => {
+    const url = await getCurrentTabUrl();
     const { user } = await getLoggedInUser(sendResponse);
     const adderEmail = user.email;
     const querySnapshot = await _getLinkedInProfile(adderEmail, url);
