@@ -6,26 +6,26 @@ const profilesRef = collection(db, "profiles");
 const notesRef = collection(db, "notes");
 
 async function getNote(email, url) {
-  // Change
-  const q = query(
-    profilesRef,
-    where("adderEmail", "==", email),
-    where("link", "==", url),
-  );
-  return await getDocs(q);
+    // Change
+    const q = query(
+        profilesRef,
+        where("adderEmail", "==", email),
+        where("link", "==", url),
+    );
+    return await getDocs(q);
 }
 
 export const getNotesUserList = async (email) => {
-  return await profilesRef.where("adderEmail", "==", email).get();
+    return await profilesRef.where("adderEmail", "==", email).get();
 };
 
 export const getNotesProfileList = async (linkedInProfile, sendResponse) => {
-  const email = getLoggedInUser(sendResponse);
-  if (email === false) {
-    return;
-  }
+    const email = getLoggedInUser(sendResponse);
+    if (email === false) {
+        return;
+    }
 
-  // Check Perms
+    // Check Perms
 };
 
 export const setNote = () => {};
