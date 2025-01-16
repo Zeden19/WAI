@@ -1,4 +1,4 @@
-import {collection, deleteDoc, doc, getDocs, query, setDoc, where} from "firebase/firestore"
+import {collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, addDoc, where} from "firebase/firestore"
 import db from "../firebase"
 import {getLoggedInUser, getProfileSlug} from "./utils";
 
@@ -10,17 +10,14 @@ export async function _getLinkedInProfile(adderEmail, url) {
     // TODO Index this shit lmao (composite index)
 
     // Meant for when you own the profile
-    const docRef = await getDoc(doc(db, "yourCollectionName", documentId));
-    const shareEmailList = docRef.data.sharedWith;
+    const docRef = await getDoc(doc(db, "users", adderEmail));
+    console.log(docRef.data())
+    const shareEmailList = docRef.data().accountsSharedWith;
     shareEmailList.push(adderEmail);
 
-    const query = profilesRef
-                    .where("adderEmail", "in", shareEmailList)
-                    .where("link", "==", url)
-                    .limit(1);
-    
-    return await query.get();
-}
+    const q = query(profilesRef, where("adderEmail", "in", shareEmailList), where("link", "==", url));
+    return await getDocs(q);
+  }
 
 // GET, SET AND DELETE
 export const getLinkedInProfile = async (url, sendResponse) => {
@@ -39,9 +36,9 @@ export const setLinkedInProfile = async (url, sendResponse) => {
     url = url.replace('/?originalSubdomain', '');
     url = url.replace('%2F%3ForiginalSubdomain%3', '')
 
-    const profilesDocRef = doc(db, "profiles");
-    const profileDocId = profilesDocRef.id; 
-    const profileDocResponse = await setDoc(profilesDocRef, {
+    const profilesDocRef = collection(db, "profiles");
+    const profileDocId = profilesDocRef.id;
+    const profileDocResponse = await addDoc(profilesDocRef, {
         adderEmail: data.user.email,
         adderImage: data.user.photoURL,
         link: url,
@@ -54,10 +51,11 @@ export const setLinkedInProfile = async (url, sendResponse) => {
         profileRef: profilesDocRef.path, // Reference to the 'profiles' document
         timestamp: new Date(),
     });
-    const notesSubCollection = collection(notesDocRef, "sharedWith")
-    await addDoc(notesSubCollection, "stats", {
-        numberOfNotes: 0,
-    });
+
+    // const notesSubCollection = collection(noteDocRef, "sharedWith")
+    // await addDoc(notesSubCollection, "stats", {
+    //     numberOfNotes: 0,
+    // });
 
     sendResponse({profileDocResponse})
 }
