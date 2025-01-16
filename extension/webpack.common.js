@@ -12,16 +12,16 @@ module.exports = {
     // Major UI Components
     urlButton: "./src/scripts/components/urlButton.js",
     shareButton: "./src/scripts/components/shareButton.js",
-    notes: "./src/scripts/components/notes.js",
+    notes: "./src/scripts/components/notesFB.js",
 
     // Minor Components
     spinner: "./src/scripts/components/spinner.js",
     toast: "./src/scripts/components/toast.js",
 
     // Background Tasks
-    notes: "./src/backgroundTasks/notes.js",
-    profile: "./src/backgroundTasks/profiles.js",
-    shareUsers: "./src/backgroundTasks/shareUsers.js",
+    notes: "./src/backgroundTasks/notesFB.js",
+    profile: "./src/backgroundTasks/profilesFB.js",
+    shareUsers: "./src/backgroundTasks/shareUsersFB.js",
     utils: "./src/backgroundTasks/utils.js"
   },
   output: {

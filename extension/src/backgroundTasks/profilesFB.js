@@ -11,25 +11,32 @@ import {
     setDoc,
     updateDoc,
     where,
-    arrayRemove
+    arrayRemove,
+    or,
 } from "firebase/firestore"
 import db from "../background"
 import {getProfileSlug, getLoggedInUser} from "./utils";
 
+const usersRef = db.collection("users");
 const profilesRef = db.collection("profiles");
 const notesRef = db.collection("notes");
 
 async function _getLinkedInProfile(adderEmail, url) {
     // TODO Index this shit lmao (composite index)
+
+    // Meant for when you own the profile
+    const docRef = await getDoc(doc(db, "yourCollectionName", documentId));
+    const shareEmailList = docRef.data.sharedWith;
+    shareEmailList.push(adderEmail);
+
     const query = profilesRef
-                    .where("adderEmail", "==", adderEmail)
+                    .where("adderEmail", "in", shareEmailList)
                     .where("link", "==", url)
                     .limit(1);
+    
     return await query.get();
 }
  
-
-
 
 
 // GET, SET AND DELETE
@@ -48,23 +55,25 @@ export const setLinkedInProfile = async (url, sendResponse) => {
     url = url.replace('/?originalSubdomain', '');
     url = url.replace('%2F%3ForiginalSubdomain%3', '')
 
-    const profilesDocRef = doc(db, "profiles", `${data.user.email}-${getProfileSlug(url)}`);
+    const profilesDocRef = doc(db, "profiles");
+    const profileDocId = profilesDocRef.id; 
     const profileDocResponse = await setDoc(profilesDocRef, {
         adderEmail: data.user.email,
         adderImage: data.user.photoURL,
         link: url,
-        notes: [],
         sharedWith: []
     });
 
 
-    const noteDocRef = doc(db, "notes", `${data.user.email}-${getProfileSlug(url)}-note`);
+    const noteDocRef = doc(db, "notes", `${profileDocId}-note`);
     await setDoc(noteDocRef, {
         profileRef: profilesDocRef.path, // Reference to the 'profiles' document
         timestamp: new Date(),
-        notesCollection: []
     });
-
+    const notesSubCollection = collection(notesDocRef, "sharedWith")
+    await addDoc(notesSubCollection, "stats", {
+        numberOfNotes: 0,
+    });
 
     sendResponse({profileDocResponse})
 }

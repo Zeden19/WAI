@@ -1,9 +1,9 @@
 import { initializeApp } from "firebase/app"
 import { doc, getFirestore, setDoc } from "firebase/firestore"
 
-import { getEmailList, removeShareProfile, setShareProfile} from "./backgroundTasks/shareUsers";
-import { getLinkedInProfile, setLinkedInProfile, removeLinkedinProfile} from "./backgroundTasks/profiles";
-import { getNotesProfileList, setNote, removeNote} from "./backgroundTasks/notes";
+import { getEmailList, removeShareProfile, setShareProfile} from "./backgroundTasks/shareUsersFB";
+import { getLinkedInProfile, setLinkedInProfile, removeLinkedinProfile} from "./backgroundTasks/profilesFB";
+import { getNotesProfileList, setNote, removeNote} from "./backgroundTasks/notesFB";
 
 
 const firebaseConfig = {
