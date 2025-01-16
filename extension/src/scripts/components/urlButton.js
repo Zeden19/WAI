@@ -3,9 +3,15 @@ export const addUrlButton = () => {
   let spinner = document.createElement("spinner");
 
   // from testing, page loading is inconsistent, either item 3 or item 4 is the correct element
-  const buttonList =
-    document.getElementsByClassName("ph5")[0]?.children.item(4) ??
-    document.getElementsByClassName("ph5")[0]?.children.item(3);
+  let consistentClassName = document.getElementsByClassName("ph5 pb5");
+  let buttonList;
+    if (consistentClassName) {
+    buttonList = consistentClassName[0]?.children.item(3);
+  } else {
+    buttonList =
+      document.getElementsByClassName("ph5")[0]?.children.item(4) ??
+      document.getElementsByClassName("ph5")[0]?.children.item(3);
+  }
 
   if (!button) {
     button = document.createElement("button");

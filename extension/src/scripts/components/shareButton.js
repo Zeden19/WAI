@@ -15,11 +15,13 @@ export function addShareButton(urlButton) {
     urlButton.parentElement.appendChild(container);
   }
 
-  button = document.createElement("button");
-  button.id = "shareButton";
-  button.classList.add("waiFinanceButton");
-  button.innerText = "Share Link";
-  container.appendChild(button);
+  if (!button) {
+    button = document.createElement("button");
+    button.id = "shareButton";
+    button.classList.add("waiFinanceButton");
+    button.innerText = "Share Link";
+    container.appendChild(button);
+  }
 
   if (!emailList) {
     chrome.runtime.sendMessage(

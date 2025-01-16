@@ -31,8 +31,6 @@ export function mainRenderer() {
           removeShareButton();
           removeNotesUI();
         }
-        console.log(result);
-        console.log(action);
 
         button.innerText = `${action} URL`;
 
@@ -84,5 +82,5 @@ export function mainRenderer() {
           }
         };
       });
-  }, 2000);
+  }, 1500);
 }

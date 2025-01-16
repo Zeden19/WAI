@@ -23,7 +23,6 @@ export async function _getLinkedInProfile(adderEmail, url) {
 
   // Check Who Shares
   const docRef = await getDoc(doc(db, "users", adderEmail));
-  console.log(docRef.data());
   const shareEmailList = docRef.data().accountsSharedWith;
 
   //
@@ -84,8 +83,6 @@ export const setLinkedInProfile = async (url, sendResponse) => {
 export const deleteLinkedinProfile = async (url, sendResponse) => {
   const data = await getLoggedInUser(sendResponse);
   if (!data) return;
-
-  console.log(data);
 
   const querySnapshotProfiles = await _getLinkedInProfile(data.user.email, url);
   for (const document of querySnapshotProfiles.docs) {

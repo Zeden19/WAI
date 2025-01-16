@@ -112,28 +112,29 @@ let notesTextArea = null;
 let confirmButton = null;
 
 export const addNotesUI = () => {
+  notesUI = document.getElementById("notesUI");
   // Renders and creates the text area for notes
   const renderNotesTextArea = () => {
-    notesUI = document.getElementById("notesUI");
-    const parentUI = document.querySelector(".ph5.pb5");
+    const parentUI = document.querySelector(".ph5");
 
-    if (!notesUI) {
-      notesUI = document.createElement("div");
-      notesUI.classList.add("notesUI");
-      parentUI.appendChild(notesUI);
+    notesUI = document.createElement("div");
+    notesUI.id = "notesUI";
+    notesUI.classList.add("notesUI");
+    parentUI.appendChild(notesUI);
 
-      notesTextArea = document.createElement("textarea");
-      notesUI.appendChild(notesTextArea); // Add button to notes UI
+    notesTextArea = document.createElement("textarea");
+    notesUI.appendChild(notesTextArea); // Add button to notes UI
 
-      confirmButton = document.createElement("button");
-      notesUI.appendChild(confirmButton); // Add button to notes UI
-    }
+    confirmButton = document.createElement("button");
+    notesUI.appendChild(confirmButton); // Add button to notes UI
   };
 
   const renderPostArea = () => {};
   const renderAllNotesArea = () => {};
 
-  renderNotesTextArea();
+  if (!notesUI) {
+    renderNotesTextArea();
+  }
   renderPostArea();
   renderAllNotesArea();
   addNoteTitle();
