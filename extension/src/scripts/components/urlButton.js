@@ -1,12 +1,23 @@
+import { hideSpinner, showSpinner } from "./spinner";
+import { showToast } from "./toast";
+import { addShareButton, removeShareButton } from "./shareButton";
+import { addNotesUI, removeNotesUI } from "./notes";
+
+let button;
+let spinner;
 export const addUrlButton = () => {
-    let button = document.getElementById("urlButton");
-    let spinner = document.createElement("spinner");
+    button = document.getElementById("urlButton");
+    spinner = document.createElement("spinner");
 
     // from testing, page loading is inconsistent, either item 3 or item 4 is the correct element
-    let consistentClassName = document.getElementsByClassName("ph5 pb5");
+    let consistentElement = document.getElementsByClassName("ph5 pb5");
     let buttonList;
-    if (consistentClassName) {
-        buttonList = consistentClassName[0]?.children.item(3);
+    if (consistentElement) {
+        // this occurs if there is a "connect with people you know" bubble
+        buttonList =
+            consistentElement[0]?.children.item(3).tagName !== "A"
+                ? consistentElement[0]?.children.item(3)
+                : consistentElement[0]?.children.item(4);
     } else {
         buttonList =
             document.getElementsByClassName("ph5")[0]?.children.item(4) ??
@@ -42,4 +53,56 @@ export const addUrlButton = () => {
         buttonList.style.rowGap = "10px";
     }
     return [button, spinner];
+};
+
+export const setUrlButtonAction = (action, message) => {
+    button.innerText = `${action} URL`;
+
+    // we use onclick here instead of adding an event listener to prevent duplicate clicks
+    button.onclick = async () => {
+        button.disabled = true;
+
+        if (!spinner) {
+            spinner = document.getElementById("spinner");
+        }
+
+        showSpinner(spinner);
+        const data = await chrome.runtime.sendMessage({
+            message,
+            url: window.location.href,
+        });
+        hideSpinner(spinner);
+
+        if (data.error) {
+            button.disabled = false;
+            showToast(
+                `Could not ${action.toLowerCase()} link: ${data.error}`,
+                "error",
+            );
+        } else {
+            showToast(
+                `Link successfully ${action.toLowerCase()}ed!`,
+                "success",
+            );
+
+            // Toggle action and message for next click
+            if (action === "Add") {
+                action = "Remove";
+                message = "linkedinRemove";
+
+                if (!document.getElementById("shareButton")) {
+                    addShareButton(button);
+                    addNotesUI();
+                }
+            } else {
+                action = "Add";
+                message = "linkedinAdd";
+                removeShareButton();
+                removeNotesUI();
+            }
+
+            button.innerText = `${action} URL`;
+            button.disabled = false;
+        }
+    };
 };

@@ -5,27 +5,23 @@ import {
     getDoc,
     getDocs,
     query,
-    setDoc,
     addDoc,
     where,
     or,
     and,
 } from "firebase/firestore";
 import db from "../firebase";
-import { getLoggedInUser, getProfileSlug, getCurrentTabUrl } from "./utils";
+import { getLoggedInUser, getProfileSlug } from "./utils";
+import { setNote } from "./notes";
 
 const profilesRef = collection(db, "profiles");
-const notesRef = collection(db, "notes");
 
 //todo rename this
 export async function _getLinkedInProfile(adderEmail, url) {
     // TODO Index this shit lmao (composite index)
-
     // Check Who Shares
     const docRef = await getDoc(doc(db, "users", adderEmail));
     const shareEmailList = docRef.data().accountsSharedWith;
-
-    //
 
     shareEmailList.push(adderEmail);
 
@@ -44,8 +40,7 @@ export async function _getLinkedInProfile(adderEmail, url) {
 }
 
 // GET, SET AND DELETE
-export const getLinkedInProfile = async (sendResponse) => {
-    const url = await getCurrentTabUrl();
+export const getLinkedInProfile = async (url, sendResponse) => {
     const data = await getLoggedInUser(sendResponse);
     if (!data) return;
 
@@ -53,37 +48,24 @@ export const getLinkedInProfile = async (sendResponse) => {
     sendResponse({ exists: !querySnapshot.empty });
 };
 
-export const setLinkedInProfile = async (sendResponse) => {
-    const url = await getCurrentTabUrl();
+export const setLinkedInProfile = async (url, sendResponse) => {
     const data = await getLoggedInUser(sendResponse);
     if (!data) return;
 
-    const profilesDocRef = collection(db, "profiles");
-    const profileDocId = profilesDocRef.id;
-    const profileDocResponse = await addDoc(profilesDocRef, {
+    const profileDocResponse = await addDoc(profilesRef, {
         adderEmail: data.user.email,
         adderImage: data.user.photoURL,
         link: url,
         sharedWith: [],
     });
 
-    const noteDocRef = doc(db, "notes", `${profileDocId}-note`);
-    await addDoc(noteDocRef, {
-        profileRef: profilesDocRef.path, // Reference to the 'profiles' document
-        timestamp: new Date(),
-    });
-
-    // const notesSubCollection = collection(noteDocRef, "sharedWith")
-    // await addDoc(notesSubCollection, "stats", {
-    //     numberOfNotes: 0,
-    // });
+    await setNote(profileDocResponse);
 
     sendResponse({ profileDocResponse });
 };
 
 // need to be updated
-export const deleteLinkedinProfile = async (sendResponse) => {
-    const url = await getCurrentTabUrl();
+export const deleteLinkedinProfile = async (url, sendResponse) => {
     const data = await getLoggedInUser(sendResponse);
     if (!data) return;
 
@@ -102,3 +84,4 @@ export const deleteLinkedinProfile = async (sendResponse) => {
 
     sendResponse({ success: true });
 };
+

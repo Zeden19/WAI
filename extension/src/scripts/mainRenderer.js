@@ -1,6 +1,6 @@
 import { addShareButton, removeShareButton } from "./components/shareButton";
 import { addNotesUI, removeNotesUI } from "./components/notes";
-import { addUrlButton } from "./components/urlButton";
+import { addUrlButton, setUrlButtonAction } from "./components/urlButton";
 import { showToast } from "./components/toast";
 import { showSpinner, hideSpinner } from "./components/spinner";
 

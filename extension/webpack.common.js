@@ -3,33 +3,33 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
     entry: {
-        background: "./src/background.js",
-        firebase: "./src/firebase.js",
-        offscreen: "./src/offscreen.js",
-        signInPopup: "./src/signInPopup.js",
-        linkedin: "./src/scripts/linkedin.js",
-        mainRenderer: "./src/scripts/mainRenderer.js",
+        "background": "./src/background.js",
+        "firebase": "./src/firebase.js",
+        "offscreen": "./src/offscreen.js",
+        "signInPopup": "./src/signInPopup.js",
+        "scripts/linkedin": "./src/scripts/linkedin.js",
+        "scripts/mainRenderer": "./src/scripts/mainRenderer.js",
 
         // Major UI Components
-        urlButton: "./src/scripts/components/urlButton.js",
-        shareButton: "./src/scripts/components/shareButton.js",
-        notes: "./src/scripts/components/notes.js",
+        "scripts/components/urlButton": "./src/scripts/components/urlButton.js",
+        "scripts/components/shareButton": "./src/scripts/components/shareButton.js",
+        "scripts/components/notes": "./src/scripts/components/notes.js",
 
         // Minor Components
-        spinner: "./src/scripts/components/spinner.js",
-        toast: "./src/scripts/components/toast.js",
+        "scripts/components/spinner": "./src/scripts/components/spinner.js",
+        "scripts/components/toast": "./src/scripts/components/toast.js",
 
         // Background Tasks
-        notesF: "./src/backgroundTasks/notesFB.js",
-        profileFB: "./src/backgroundTasks/profilesFB.js",
-        shareUsersFB: "./src/backgroundTasks/shareUsersFB.js",
-        notesFB: "./src/backgroundTasks/notesFB.js",
-        profile: "./src/backgroundTasks/profilesFB.js",
-        shareUsers: "./src/backgroundTasks/shareUsersFB.js",
-        utils: "./src/backgroundTasks/utils.js",
+        "backgroundTasks/notesF": "./src/backgroundTasks/notes.js",
+        "backgroundTasks/profileFB": "./src/backgroundTasks/profiles.js",
+        "backgroundTasks/shareUsersFB": "./src/backgroundTasks/shareUsers.js",
+        "backgroundTasks/notesFB": "./src/backgroundTasks/notes.js",
+        "backgroundTasks/profile": "./src/backgroundTasks/profiles.js",
+        "backgroundTasks/shareUsers": "./src/backgroundTasks/shareUsers.js",
+        "backgroundTasks/utils": "./src/backgroundTasks/utils.js",
     },
     output: {
-        filename: "[name].js",
+        filename: "[name].js", // Use the entry keys to determine output paths
         path: path.resolve(__dirname, "dist"),
         clean: true, // Clean the output directory before emit.
     },

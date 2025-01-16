@@ -49,28 +49,28 @@ const addPostNotes = () => {
 
     // Posting Changes to Notes
     const postNewNotes = async () => {
-        postNotePostButton.disabled = true;
-        postNoteBody.disabled = true;
-        postNotePostButton.innerText = "Saving...";
-        postNotePostButton.style.backgroundColor = "rgb(80, 144, 207)";
-		
-		const result = await chrome.runtime.sendMessage({
-			title: "",
-			content: postNoteBody.value,
-			message: "setNote"
-		});
+        confirmButton.disabled = true;
+        notesTextArea.disabled = true;
+        confirmButton.innerText = "Saving...";
+        confirmButton.style.backgroundColor = "rgb(80, 144, 207)";
 
-		if(!result){
-			showToast("Network Issue", "error")
-		}else{
-			showToast("Notes Saved", "success");
-		}
-		
-        postNotePostButton.disabled = false;
-        postNoteBody.disabled = false;
-        postNotePostButton.innerText = "Save";
-        postNotePostButton.style.backgroundColor = "rgb(10, 102, 194)";
+        const newNote = await chrome.runtime.sendMessage({
+            message: "newNote",
+            noteText: notesTextArea.value
+        })
 
+        if (newNote?.error) {
+            showToast(newNote.error, "error");
+        } else {
+            showToast("Note created successfully", "success")
+        }
+
+        confirmButton.disabled = false;
+        notesTextArea.disabled = false;
+        confirmButton.innerText = "Save";
+        confirmButton.style.backgroundColor = "rgb(10, 102, 194)";
+
+        // set id of the newly created element (newNote.id)
     };
 
     postNotePostButton.addEventListener("click", async () => {await postNewNotes()});
