@@ -116,7 +116,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         case "signIn":
             handleSignIn(sendResponse); // this is required, we cannot inline or else we can't return data to sender due to async
             break;
-
         case "hasAddedLink":
             getLinkedInProfile(sendResponse);
             break;
@@ -144,10 +143,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         case "setNote":
             setNote(request.noteContent, sendResponse);
             break;
-
         case "newNote":
             newNote(request.noteText, sendResponse);
             break;
+        case "getNotesList":
+
 
         default:
             // Handle unknown message type if necessary

@@ -14,7 +14,7 @@ export const getLoggedInUser = () => {
                 reject({ error: "You are not signed in" });
                 //todo allow for user to sign in if they aren't then add profile in one single click
             } else {
-                resolve(data);
+                resolve(data.user);
             }
         });
     });

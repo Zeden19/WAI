@@ -7,7 +7,7 @@ import {
     updateDoc,
 } from "firebase/firestore";
 import db from "../firebase";
-import { getLoggedInUser } from "./utils";
+import { getCurrentTabUrl, getLoggedInUser } from "./utils";
 import { _getLinkedInProfile } from "./profiles";
 
 /* Sharing Feature */
@@ -15,8 +15,12 @@ import { _getLinkedInProfile } from "./profiles";
 // i have no experience with caching so i need to figure dat out
 export const getEmailList = async (sendResponse) => {
     const url = await getCurrentTabUrl();
-    const data = await getLoggedInUser(sendResponse);
-    if (!data) return;
+    const user = await getLoggedInUser(sendResponse);
+    if (!user) {
+        sendResponse({error: "Something went wrong"});
+        console.error("user undefined");
+        return
+    }
 
     const querySnapshot = await getDocs(collection(db, "users"));
     const emailList = querySnapshot.docs.map((doc) => doc.id);
@@ -27,7 +31,7 @@ export const getEmailList = async (sendResponse) => {
         .data().sharedWith;
 
     // removing the currently logged-in user's email
-    emailList.splice(emailList.indexOf(data.user.email), 1);
+    emailList.splice(emailList.indexOf(user.email), 1);
 
     // marking if the user has been added to the url
     const emailListObject = emailList.map((email) => ({
@@ -39,12 +43,10 @@ export const getEmailList = async (sendResponse) => {
 };
 
 export const setShareProfile = async (recipientEmail, sendResponse) => {
-    const url = await getCurrentTabUrl();
-    const { user } = await getLoggedInUser(sendResponse);
-    const adderEmail = user.email;
-    const querySnapshot = await _getLinkedInProfile(adderEmail, url);
+    const querySnapshot = await _getLinkedInProfile();
 
     if (querySnapshot.empty) {
+        console.error("User has not added link")
         sendResponse({ error: "You have not added this link" });
         return;
     }
@@ -57,12 +59,11 @@ export const setShareProfile = async (recipientEmail, sendResponse) => {
 };
 
 export const removeShareProfile = async (recipientEmail, sendResponse) => {
-    const url = await getCurrentTabUrl();
-    const { user } = await getLoggedInUser(sendResponse);
-    const adderEmail = user.email;
-    const querySnapshot = await _getLinkedInProfile(adderEmail, url);
+    const querySnapshot = await _getLinkedInProfile();
+    console.log(querySnapshot);
 
     if (querySnapshot.empty) {
+        console.error("User has not added link")
         sendResponse({ error: "You have not added this link" });
         return;
     }

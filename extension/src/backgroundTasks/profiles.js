@@ -11,17 +11,24 @@ import {
     where,
 } from "firebase/firestore";
 import db from "../firebase";
-import { getLoggedInUser } from "./utils";
+import { getCurrentTabUrl, getLoggedInUser } from "./utils";
 import { setNote } from "./notes";
 
 const profilesRef = collection(db, "profiles");
 
 //todo rename this
-export async function _getLinkedInProfile(adderEmail, url) {
+export async function _getLinkedInProfile() {
     // TODO Index this shit lmao (composite index)
+
     // Check Who Shares
+    const { email: adderEmail } = await getLoggedInUser();
+    const url = await getCurrentTabUrl();
+    if (!adderEmail || !url) {
+        console.error("User email not found or url of current tab not found");
+        return false;
+    }
     const docRef = await getDoc(doc(db, "users", adderEmail));
-    const shareEmailList = docRef.data().accountsSharedWith;
+    const shareEmailList = docRef.data().urlsReceivedShared;
 
     shareEmailList.push(adderEmail);
 
@@ -40,21 +47,31 @@ export async function _getLinkedInProfile(adderEmail, url) {
 }
 
 // GET, SET AND DELETE
-export const getLinkedInProfile = async (url, sendResponse) => {
-    const data = await getLoggedInUser(sendResponse);
-    if (!data) return;
+export const getLinkedInProfile = async (sendResponse) => {
+    const user = await getLoggedInUser(sendResponse);
+    const url = await getCurrentTabUrl();
+    if (!user || !url) {
+        console.error("user or url is undefined");
+        sendResponse({ error: "Something went wrong" });
+        return;
+    }
 
-    const querySnapshot = await _getLinkedInProfile(data.user.email, url);
+    const querySnapshot = await _getLinkedInProfile();
     sendResponse({ exists: !querySnapshot.empty });
 };
 
-export const setLinkedInProfile = async (url, sendResponse) => {
-    const data = await getLoggedInUser(sendResponse);
-    if (!data) return;
+export const setLinkedInProfile = async (sendResponse) => {
+    const user = await getLoggedInUser(sendResponse);
+    const url = await getCurrentTabUrl();
+    if (!user || !url) {
+        console.error("user or url is undefined");
+        sendResponse({ error: "Something went wrong" });
+        return;
+    }
 
     const profileDocResponse = await addDoc(profilesRef, {
-        adderEmail: data.user.email,
-        adderImage: data.user.photoURL,
+        adderEmail: user.email,
+        adderImage: user.photoURL,
         link: url,
         sharedWith: [],
     });
@@ -65,14 +82,16 @@ export const setLinkedInProfile = async (url, sendResponse) => {
 };
 
 // need to be updated
-export const deleteLinkedinProfile = async (url, sendResponse) => {
-    const data = await getLoggedInUser(sendResponse);
-    if (!data) return;
+export const deleteLinkedinProfile = async (sendResponse) => {
+    const user = await getLoggedInUser(sendResponse);
+    const url = await getCurrentTabUrl();
+    if (!user || !url) {
+        console.error("user is undefined");
+        sendResponse({ error: "Something went wrong" });
+        return;
+    }
 
-    const querySnapshotProfiles = await _getLinkedInProfile(
-        data.user.email,
-        url,
-    );
+    const querySnapshotProfiles = await _getLinkedInProfile(url);
     for (const document of querySnapshotProfiles.docs) {
         await deleteDoc(doc(db, "profiles", document.id));
     }

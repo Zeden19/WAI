@@ -80,19 +80,22 @@ const addPostNotes = () => {
 
 const removePostNotes = () => {};
 
-const addAllNotes = () => {
+const addAllNotes = async () => {
     // Previous Button
     allNotesPreviousButton.innerText = "See All Notes";
     allNotesPreviousButton.style.margin = "1.6rem";
 
     // getting the notes
-    //const notes = await chrome.runtime.sendMessage({message: "getNoteList",})
+    const { notes } = await chrome.runtime.sendMessage({
+        message: "getNoteList",
+    });
 
     const testHeader = document.createElement("h2");
     testHeader.textContent = "Test Header";
     allNoteScrollArea.appendChild(testHeader);
 
-    const renderIndividualPost = (note) => {};
+    const renderIndividualPost = (note) => {
+    };
 
     notes?.forEach((note) => {
         renderIndividualPost(note);

@@ -13,6 +13,7 @@ import { _getLinkedInProfile } from "./profiles";
 
 const profilesRef = collection(db, "profiles");
 
+// this won't work we need note id
 async function getNote(email, url) {
     // Change
     const q = query(
@@ -23,17 +24,24 @@ async function getNote(email, url) {
     return await getDocs(q);
 }
 
+// im tired as shit what the fuck is this?????
 export const getNotesUserList = async (email) => {
     return await profilesRef.where("adderEmail", "==", email).get();
 };
 
-export const getNotesProfileList = async (linkedInProfile, sendResponse) => {
-    const email = getLoggedInUser(sendResponse);
-    if (email === false) {
+export const getNotesProfileList = async (sendResponse) => {
+    const linkedinProfile = await _getLinkedInProfile()
+
+    if (!linkedinProfile) {
+        sendResponse({error: "Something went wrong"});
         return;
     }
 
-    // Check Perms
+    const collectionRef = collection(db, "profiles", linkedinProfile.docs[0].id, "notes");
+    const querySnapshot = await getDocs(collectionRef);
+    const notes = [];
+    querySnapshot.forEach((doc) => notes.push(doc.data()));
+    sendResponse({success: true, notes})
 };
 
 export const setNote = async (profile) => {
@@ -50,9 +58,7 @@ export const setNote = async (profile) => {
 
 export const newNote = async (noteText, sendResponse) => {
     // getting all info
-    const { user } = await getLoggedInUser();
-    const url = await getCurrentTabUrl();
-    const profile = await _getLinkedInProfile(user.email, url);
+    const profile = await _getLinkedInProfile();
 
     if (!user || !url || !profile) {
         console.error(`user: ${user}, url: ${url}, profile: ${profile}`);
@@ -74,12 +80,10 @@ export const newNote = async (noteText, sendResponse) => {
 export const updateNotes = () => {};
 
 export const removeNote = async (noteId, sendResponse) => {
-    const { user } = await getLoggedInUser();
-    const url = await getCurrentTabUrl();
-    const profile = await _getLinkedInProfile(user.email, url);
+    const profile = await _getLinkedInProfile();
 
-    if (!user || !url || !profile) {
-        console.error(`user: ${user}, url: ${url}, profile: ${profile}`);
+    if (!profile) {
+        console.error(`profile: ${profile} not defined`);
         sendResponse({ error: "Something went wrong. Please try again." });
     }
     const profileId = profile.docs[0].id;
