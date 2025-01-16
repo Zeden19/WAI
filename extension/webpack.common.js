@@ -1,12 +1,12 @@
-const path = require('path')
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const path = require("path");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   entry: {
-    background: './src/background.js',
-    firebase: './src/firebase.js',
-    offscreen: './src/offscreen.js',
-    signInPopup: './src/signInPopup.js',
+    background: "./src/background.js",
+    firebase: "./src/firebase.js",
+    offscreen: "./src/offscreen.js",
+    signInPopup: "./src/signInPopup.js",
     linkedin: "./src/scripts/linkedin.js",
     mainRenderer: "./src/scripts/mainRenderer.js",
 
@@ -26,16 +26,16 @@ module.exports = {
     notesFB: "./src/backgroundTasks/notesFB.js",
     profile: "./src/backgroundTasks/profilesFB.js",
     shareUsers: "./src/backgroundTasks/shareUsersFB.js",
-    utils: "./src/backgroundTasks/utils.js"
+    utils: "./src/backgroundTasks/utils.js",
   },
   output: {
-    filename: '[name].js',
-    path: path.resolve(__dirname, 'dist'),
+    filename: "[name].js",
+    path: path.resolve(__dirname, "dist"),
     clean: true, // Clean the output directory before emit.
   },
   plugins: [
     new CopyWebpackPlugin({
-      patterns: [{from: 'static'}],
+      patterns: [{ from: "static" }],
     }),
-  ]
-}
+  ],
+};

@@ -1,8 +1,6 @@
 import { doc } from "firebase/firestore";
 import { showToast } from "./toast";
 
-
-
 // TODO: Adding a Title Feature
 const addNoteTitle = () => {
   // Styling NotesUI
@@ -81,7 +79,6 @@ const removeNotesTitle = () => {
   confirmButton = null;
 };
 
-
 let noteBodyUI = null;
 
 const addNoteBody = () => {};
@@ -92,33 +89,27 @@ let previousNotesUI = null;
 
 const addNotePrevious = (notes) => {
   // getting the notes
-  
+
   notes?.forEach((note) => {
     renderIndividualPost(note);
   });
-  
 };
 
 const removeNotePrevious = () => {};
-
-
-
-
 
 let notesUI = null;
 
 let allNotesArea = null;
 let allNotesButton = null;
 
-let postUI = null
-let postTitle = null
-let postTextBox = null
-let postPreviousButton = null
-let postSaveButton = null
+let postUI = null;
+let postTitle = null;
+let postTextBox = null;
+let postPreviousButton = null;
+let postSaveButton = null;
 
 let notesTextArea = null;
 let confirmButton = null;
-
 
 export const addNotesUI = () => {
   // Renders and creates the text area for notes
@@ -139,13 +130,8 @@ export const addNotesUI = () => {
     }
   };
 
-  const renderPostArea = () => {
-
-  }
-  const renderAllNotesArea = () => {
-
-  }
-
+  const renderPostArea = () => {};
+  const renderAllNotesArea = () => {};
 
   renderNotesTextArea();
   renderPostArea();

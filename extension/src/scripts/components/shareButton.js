@@ -1,4 +1,4 @@
-import {showToast} from "./toast";
+import { showToast } from "./toast";
 
 let emailList = null;
 let showShareList = false;
@@ -22,15 +22,18 @@ export function addShareButton(urlButton) {
   container.appendChild(button);
 
   if (!emailList) {
-    chrome.runtime.sendMessage({message: "getEmailList", url: window.location.href}, (result) => {
-      emailList = result.emailList;
-    })
+    chrome.runtime.sendMessage(
+      { message: "getEmailList", url: window.location.href },
+      (result) => {
+        emailList = result.emailList;
+      },
+    );
   }
 
   button.onclick = () => {
-    !showShareList ? addShareList() : removeShareList()
+    !showShareList ? addShareList() : removeShareList();
     showShareList = !showShareList;
-  }
+  };
 }
 
 export function removeShareButton() {
@@ -39,13 +42,12 @@ export function removeShareButton() {
   button = null;
 }
 
-
 function addShareList() {
   if (!shareContainer) {
     shareContainer = document.createElement("div");
     shareContainer.id = "shareListContainer";
     shareContainer.style.position = "absolute";
-    shareContainer.style.backgroundColor = "white"
+    shareContainer.style.backgroundColor = "white";
     shareContainer.style.display = "flex";
     shareContainer.style.flexDirection = "column";
     shareContainer.style.zIndex = "100";
@@ -54,10 +56,9 @@ function addShareList() {
     shareContainer.style.overflow = "hidden";
   }
 
-
   if (emailList.length === 0) {
     const div = document.createElement("div");
-    div.innerText = "No emails to share to"
+    div.innerText = "No emails to share to";
     shareContainer.appendChild(div);
   } else {
     emailList.map((email, index) => {
@@ -67,13 +68,12 @@ function addShareList() {
       div.style.cursor = "pointer";
       div.onmouseover = () => {
         div.style.backgroundColor = "#CCC";
-      }
+      };
       div.onmouseout = () => {
         div.style.backgroundColor = "white";
-      }
+      };
       div.style.borderBottom = `${index !== emailList.length - 1 && "1px solid black"}`;
       div.innerText = email.email + `${email.hasAdded ? "-" : "+"}`;
-
 
       div.onclick = async () => {
         const data = await chrome.runtime.sendMessage({
@@ -81,13 +81,22 @@ function addShareList() {
           url: window.location.href,
           email: email.email,
         });
-        if (data.error) showToast(`"Could not ${email.hasAdded ? 'remove shared' : 'share'} link: ` + data.error, "error");
-        else showToast(`Link successfully ${email.hasAdded ? 'removed' : 'shared'} with ${email.email}`, "success");
-        email.hasAdded = !email.hasAdded
+        if (data.error)
+          showToast(
+            `"Could not ${email.hasAdded ? "remove shared" : "share"} link: ` +
+              data.error,
+            "error",
+          );
+        else
+          showToast(
+            `Link successfully ${email.hasAdded ? "removed" : "shared"} with ${email.email}`,
+            "success",
+          );
+        email.hasAdded = !email.hasAdded;
         removeShareList();
-      }
+      };
       shareContainer.appendChild(div);
-    })
+    });
   }
 
   container.appendChild(shareContainer);
@@ -98,11 +107,14 @@ function removeShareList() {
   shareContainer = null;
 }
 
-
 function handleClick(event) {
-  if (showShareList && !shareContainer?.contains(event.target) && !button?.contains(event.target)) {
+  if (
+    showShareList &&
+    !shareContainer?.contains(event.target) &&
+    !button?.contains(event.target)
+  ) {
     removeShareList();
-    showShareList = false
+    showShareList = false;
   }
 }
 

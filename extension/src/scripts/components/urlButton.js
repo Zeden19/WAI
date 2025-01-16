@@ -1,21 +1,21 @@
 export const addUrlButton = () => {
-    let button = document.getElementById("urlButton");
-    let spinner = document.createElement("spinner");
+  let button = document.getElementById("urlButton");
+  let spinner = document.createElement("spinner");
 
-    // from testing, page loading is inconsistent, either item 3 or item 4 is the correct element
-    const buttonList =
-        document.getElementsByClassName("ph5")[0]?.children.item(4) ??
-        document.getElementsByClassName("ph5")[0]?.children.item(3);
+  // from testing, page loading is inconsistent, either item 3 or item 4 is the correct element
+  const buttonList =
+    document.getElementsByClassName("ph5")[0]?.children.item(4) ??
+    document.getElementsByClassName("ph5")[0]?.children.item(3);
 
-    if (!button) {
-        button = document.createElement("button");
-        button.id = "urlButton";
-        button.classList.add("waiFinanceButton");
+  if (!button) {
+    button = document.createElement("button");
+    button.id = "urlButton";
+    button.classList.add("waiFinanceButton");
 
-        spinner = document.createElement("span");
-        spinner.id = "spinner";
-        spinner.style.display = "none";
-        spinner.innerHTML = `
+    spinner = document.createElement("span");
+    spinner.id = "spinner";
+    spinner.style.display = "none";
+    spinner.innerHTML = `
         <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <style>
             .spinner_HIK5 { transform-origin: center; animation: spinner_XVY9 1s cubic-bezier(0.36, .6, .31, 1) infinite; }
@@ -28,14 +28,12 @@ export const addUrlButton = () => {
           </g>
         </svg>`;
 
-        button.appendChild(spinner);
-        buttonList.append(button);
+    button.appendChild(spinner);
+    buttonList.append(button);
 
-        // linkedin page gets messed up when we add more buttons, so make sure it can wrap
-        buttonList.style.flexWrap = "wrap";
-        buttonList.style.rowGap = "10px";
-
-    }
-    return [button, spinner];
+    // linkedin page gets messed up when we add more buttons, so make sure it can wrap
+    buttonList.style.flexWrap = "wrap";
+    buttonList.style.rowGap = "10px";
+  }
+  return [button, spinner];
 };
-

@@ -1,10 +1,22 @@
-import {doc, setDoc} from "firebase/firestore"
-import {getEmailList, removeShareProfile, setShareProfile} from "./backgroundTasks/shareUsersFB";
-import {getLinkedInProfile, setLinkedInProfile, deleteLinkedinProfile} from "./backgroundTasks/profilesFB";
-import {getNotesProfileList, setNote, removeNote} from "./backgroundTasks/notesFB";
-import db from "./firebase"
+import { doc, setDoc } from "firebase/firestore";
+import {
+  getEmailList,
+  removeShareProfile,
+  setShareProfile,
+} from "./backgroundTasks/shareUsersFB";
+import {
+  getLinkedInProfile,
+  setLinkedInProfile,
+  deleteLinkedinProfile,
+} from "./backgroundTasks/profilesFB";
+import {
+  getNotesProfileList,
+  setNote,
+  removeNote,
+} from "./backgroundTasks/notesFB";
+import db from "./firebase";
 
-const OFFSCREEN_DOCUMENT_PATH = './offscreen.html';
+const OFFSCREEN_DOCUMENT_PATH = "./offscreen.html";
 
 // A global promise to avoid concurrency issues
 let creating;
@@ -16,7 +28,7 @@ async function hasDocument() {
   // of them is the offscreen document with the given path
   const matchedClients = await clients.matchAll();
   return matchedClients.some(
-    (c) => c.url === chrome.runtime.getURL(OFFSCREEN_DOCUMENT_PATH)
+    (c) => c.url === chrome.runtime.getURL(OFFSCREEN_DOCUMENT_PATH),
   );
 }
 
@@ -29,10 +41,8 @@ async function setupOffscreenDocument(path) {
     } else {
       creating = chrome.offscreen.createDocument({
         url: path,
-        reasons: [
-          chrome.offscreen.Reason.DOM_SCRAPING
-        ],
-        justification: 'authentication'
+        reasons: [chrome.offscreen.Reason.DOM_SCRAPING],
+        justification: "authentication",
       });
       await creating;
       creating = null;
@@ -50,11 +60,11 @@ async function closeOffscreenDocument() {
 function getAuth() {
   return new Promise(async (resolve, reject) => {
     const auth = await chrome.runtime.sendMessage({
-      type: 'firebase-auth',
-      target: 'offscreen'
+      type: "firebase-auth",
+      target: "offscreen",
     });
-    auth?.name !== 'FirebaseError' ? resolve(auth) : reject(auth);
-  })
+    auth?.name !== "FirebaseError" ? resolve(auth) : reject(auth);
+  });
 }
 
 async function firebaseAuth() {
@@ -62,14 +72,16 @@ async function firebaseAuth() {
 
   return await getAuth()
     .then((auth) => {
-      console.log('User Authenticated', auth);
+      console.log("User Authenticated", auth);
       return auth;
     })
-    .catch(err => {
-      if (err.code === 'auth/operation-not-allowed') {
-        console.error('You must enable an OAuth provider in the Firebase' +
-          ' console in order to use signInWithPopup. This sample' +
-          ' uses Google by default.');
+    .catch((err) => {
+      if (err.code === "auth/operation-not-allowed") {
+        console.error(
+          "You must enable an OAuth provider in the Firebase" +
+            " console in order to use signInWithPopup. This sample" +
+            " uses Google by default.",
+        );
       } else {
         console.error(err);
         return err;
@@ -81,19 +93,22 @@ async function firebaseAuth() {
 const handleSignIn = async (sendResponse) => {
   const response = await firebaseAuth();
   const user = response.user;
-  await chrome.storage.local.set({user});
+  await chrome.storage.local.set({ user });
 
-  await setDoc(doc(db, "users", user.email), {
-    email: user.email,
-    photoURL: user.photoURL,
-    accountsSharedWith: [], // users shouldn't be able to write to their own, only delete and read
-    displayName: user.displayName,
-  }, {merge: true})
+  await setDoc(
+    doc(db, "users", user.email),
+    {
+      email: user.email,
+      photoURL: user.photoURL,
+      accountsSharedWith: [], // users shouldn't be able to write to their own, only delete and read
+      displayName: user.displayName,
+    },
+    { merge: true },
+  );
 
-  sendResponse({user})
+  sendResponse({ user });
   // todo send a response to content worker to add the button(s) iff they are on a profile page
-
-}
+};
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   switch (request.message) {
@@ -113,7 +128,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       deleteLinkedinProfile(request.url, sendResponse);
       break;
 
-
     case "getEmailList":
       getEmailList(request.url, sendResponse);
       break;
@@ -125,7 +139,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     case "removeShareProfile":
       removeShareProfile(request.url, request.email, sendResponse);
       break;
-
 
     case "getNoteList":
       getNotesProfileList(request.url, request.email, sendResponse);
@@ -139,19 +152,22 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       setNote(request.url, request.email, sendResponse);
       break;
 
-
     default:
       // Handle unknown message type if necessary
       console.warn(`Unknown message type: ${request.message}`);
   }
 
   return true;
-})
+});
 
-chrome.webNavigation.onHistoryStateUpdated.addListener(async function (details) {
-  if (details.url.startsWith("https://www.linkedin.com/in/")) {
-    const [tab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
-    await chrome.tabs.sendMessage(tab.id, {}); // let content worker know that we're on the right page
-  }
-})
-
+chrome.webNavigation.onHistoryStateUpdated.addListener(
+  async function (details) {
+    if (details.url.startsWith("https://www.linkedin.com/in/")) {
+      const [tab] = await chrome.tabs.query({
+        active: true,
+        lastFocusedWindow: true,
+      });
+      await chrome.tabs.sendMessage(tab.id, {}); // let content worker know that we're on the right page
+    }
+  },
+);

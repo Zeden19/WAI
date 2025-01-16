@@ -6,12 +6,7 @@
     "service_worker": "background.js"
   },
   "version": "0.1",
-  "permissions": [
-    "offscreen",
-    "storage",
-    "webNavigation",
-    "tabs"
-  ],
+  "permissions": ["offscreen", "storage", "webNavigation", "tabs"],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'",
     "sandbox": "sandbox allow-scripts; script-src 'self' 'https://apis.google.com/' 'https://www.gstatic.com/' 'https://*.firebaseio.com' 'https://www.googleapis.com'; object-src 'self'"
@@ -22,12 +17,8 @@
   "content_scripts": [
     {
       "run_at": "document_end",
-      "js": [
-        "linkedin.js"
-      ],
-      "matches": [
-        "https://www.linkedin.com/*"
-      ]
+      "js": ["linkedin.js"],
+      "matches": ["https://www.linkedin.com/*"]
     }
   ]
 }

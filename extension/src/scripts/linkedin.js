@@ -1,5 +1,4 @@
-import {mainRenderer, mainUnRenderer} from "./mainRenderer";
-
+import { mainRenderer, mainUnRenderer } from "./mainRenderer";
 
 const style = document.createElement("style");
 style.innerHTML = `
@@ -51,24 +50,20 @@ style.innerHTML = `
 
 document.head.appendChild(style);
 
-
 // in case we start on a profile page
 if (window.location.href.startsWith("https://www.linkedin.com/in/")) {
   chrome.storage.local.get("user", (data) => {
-    if (!data.user) return
-    mainRenderer()
-  })
+    if (!data.user) return;
+    mainRenderer();
+  });
 }
 
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  chrome.storage.local.get("user", (data) => {
+    if (!data.user) return;
 
-chrome.runtime.onMessage.addListener(
-  function (request, sender, sendResponse) {
-    chrome.storage.local.get("user", (data) => {
-      if (!data.user) return
-    
-      mainUnRenderer();
-      mainRenderer();
-      sendResponse({});
-    })
-  }
-);
+    mainUnRenderer();
+    mainRenderer();
+    sendResponse({});
+  });
+});

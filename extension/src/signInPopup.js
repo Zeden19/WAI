@@ -1,8 +1,8 @@
-const signInButton = document.getElementById('signInButton');
+const signInButton = document.getElementById("signInButton");
 
 async function signInPopup() {
-  const data = await chrome.runtime.sendMessage({message: "signIn"}) // background.js saves user to local storage
-  updateUI()
+  const data = await chrome.runtime.sendMessage({ message: "signIn" }); // background.js saves user to local storage
+  updateUI();
 }
 
 // Function to log out the user and clear storage
@@ -13,7 +13,6 @@ function logOut() {
     updateUI(); // Update UI to show sign-in option
   });
 }
-
 
 function updateUI() {
   chrome.storage.local.get("user", (data) => {
@@ -32,7 +31,6 @@ function updateUI() {
       logOutButton.textContent = "Log Out";
       logOutButton.addEventListener("click", logOut);
       body.appendChild(logOutButton);
-
     } else {
       // Show sign-in button if no user is signed in
       const signInMessage = document.createElement("h1");
@@ -45,7 +43,7 @@ function updateUI() {
       button.addEventListener("click", signInPopup);
       body.appendChild(button);
     }
-  })
+  });
 }
 
-updateUI()
+updateUI();

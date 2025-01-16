@@ -1,9 +1,8 @@
-import {addShareButton, removeShareButton} from "./components/shareButton";
-import {addNotesUI, removeNotesUI} from "./components/notes";
-import {addUrlButton} from "./components/urlButton";
-import {showToast} from "./components/toast";
-import {showSpinner, hideSpinner} from "./components/spinner";
-
+import { addShareButton, removeShareButton } from "./components/shareButton";
+import { addNotesUI, removeNotesUI } from "./components/notes";
+import { addUrlButton } from "./components/urlButton";
+import { showToast } from "./components/toast";
+import { showSpinner, hideSpinner } from "./components/spinner";
 
 let action = "Add";
 
@@ -20,7 +19,7 @@ export function mainRenderer() {
     let [button, spinner] = addUrlButton();
     button.disabled = false;
     chrome.runtime
-      .sendMessage({message: "hasAddedLink", url: window.location.href})
+      .sendMessage({ message: "hasAddedLink", url: window.location.href })
       .then((result) => {
         action = result.exists ? "Remove" : "Add";
         let message = result.exists ? "linkedinRemove" : "linkedinAdd";
@@ -56,12 +55,12 @@ export function mainRenderer() {
             button.disabled = false;
             showToast(
               `Could not ${action.toLowerCase()} link: ${data.error}`,
-              "error"
+              "error",
             );
           } else {
             showToast(
               `Link successfully ${action.toLowerCase()}ed!`,
-              "success"
+              "success",
             );
 
             // Toggle action and message for next click
@@ -87,4 +86,3 @@ export function mainRenderer() {
       });
   }, 2000);
 }
-
