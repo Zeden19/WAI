@@ -4,6 +4,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = {
   entry: {
     background: './src/background.js',
+    firebase: './src/firebase.js',
     offscreen: './src/offscreen.js',
     signInPopup: './src/signInPopup.js',
     linkedin: "./src/scripts/linkedin.js",
@@ -19,6 +20,9 @@ module.exports = {
     toast: "./src/scripts/components/toast.js",
 
     // Background Tasks
+    notesF: "./src/backgroundTasks/notesFB.js",
+    profile: "./src/backgroundTasks/profiles.js",
+    shareUsers: "./src/backgroundTasks/shareUsers.js",
     notes: "./src/backgroundTasks/notesFB.js",
     profile: "./src/backgroundTasks/profilesFB.js",
     shareUsers: "./src/backgroundTasks/shareUsersFB.js",

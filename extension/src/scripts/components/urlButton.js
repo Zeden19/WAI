@@ -35,7 +35,7 @@ export const addUrlButton = () => {
         buttonList.style.flexWrap = "wrap";
         buttonList.style.rowGap = "10px";
 
-        return [button, spinner];
     }
+    return [button, spinner];
 };
 

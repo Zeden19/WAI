@@ -1,26 +1,10 @@
-import { initializeApp } from "firebase/app"
-import { doc, getFirestore, setDoc } from "firebase/firestore"
-
-import { getEmailList, removeShareProfile, setShareProfile} from "./backgroundTasks/shareUsersFB";
-import { getLinkedInProfile, setLinkedInProfile, removeLinkedinProfile} from "./backgroundTasks/profilesFB";
-import { getNotesProfileList, setNote, removeNote} from "./backgroundTasks/notesFB";
-
-
-const firebaseConfig = {
-  apiKey: "AIzaSyB_Q1OWjnniKrFvFnPcsgfQLkpiYe2lOPE",
-  authDomain: "wai-finance.firebaseapp.com",
-  projectId: "wai-finance",
-  storageBucket: "wai-finance.appspot.com",
-  messagingSenderId: "220165137666",
-  appId: "1:220165137666:web:410e82afcf46152c194e1b",
-  measurementId: "G-0M62Y2VN4G",
-};
-
-const app = initializeApp(firebaseConfig)
-const db = getFirestore(app)
+import {doc, setDoc} from "firebase/firestore"
+import {getEmailList, removeShareProfile, setShareProfile} from "./backgroundTasks/shareUsers";
+import {getLinkedInProfile, setLinkedInProfile, deleteLinkedinProfile} from "./backgroundTasks/profiles";
+import {getNotesProfileList, setNote, removeNote} from "./backgroundTasks/notesFB";
+import db from "./firebase"
 
 const OFFSCREEN_DOCUMENT_PATH = './offscreen.html';
-
 
 // A global promise to avoid concurrency issues
 let creating;
@@ -35,6 +19,7 @@ async function hasDocument() {
     (c) => c.url === chrome.runtime.getURL(OFFSCREEN_DOCUMENT_PATH)
   );
 }
+
 async function setupOffscreenDocument(path) {
   // If we do not have a document, we are already setup and can skip
   if (!(await hasDocument())) {
@@ -54,12 +39,14 @@ async function setupOffscreenDocument(path) {
     }
   }
 }
+
 async function closeOffscreenDocument() {
   if (!(await hasDocument())) {
     return;
   }
   await chrome.offscreen.closeDocument();
 }
+
 function getAuth() {
   return new Promise(async (resolve, reject) => {
     const auth = await chrome.runtime.sendMessage({
@@ -69,6 +56,7 @@ function getAuth() {
     auth?.name !== 'FirebaseError' ? resolve(auth) : reject(auth);
   })
 }
+
 async function firebaseAuth() {
   await setupOffscreenDocument(OFFSCREEN_DOCUMENT_PATH);
 
@@ -89,6 +77,7 @@ async function firebaseAuth() {
     })
     .finally(closeOffscreenDocument);
 }
+
 const handleSignIn = async (sendResponse) => {
   const response = await firebaseAuth();
   const user = response.user;
@@ -106,15 +95,12 @@ const handleSignIn = async (sendResponse) => {
 
 }
 
-
-
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   switch (request.message) {
     case "signIn":
       handleSignIn(sendResponse); // this is required, we cannot inline or else we can't return data to sender due to async
       break;
 
-      
     case "hasAddedLink":
       getLinkedInProfile(request.url, sendResponse);
       break;
@@ -124,12 +110,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       break;
 
     case "linkedinRemove":
-      removeLinkedinProfile(request.url, sendResponse);
+      deleteLinkedinProfile(request.url, sendResponse);
       break;
 
 
     case "getEmailList":
-      getEmailList(sendResponse, request.url);
+      getEmailList(request.url, sendResponse);
       break;
 
     case "shareProfile":
@@ -169,10 +155,3 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(async function (details) 
   }
 })
 
-
-
-
-
-
-
-export default db;

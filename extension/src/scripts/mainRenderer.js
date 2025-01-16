@@ -1,6 +1,6 @@
-import { addShareButton, removeShareButton } from "./components/shareButton";
-import { addNotesUI, removeNotesUI } from "./components/notes";
-import { addUrlButton } from "./components/urlButton";
+import {addShareButton, removeShareButton} from "./components/shareButton";
+import {addNotesUI, removeNotesUI} from "./components/notes";
+import {addUrlButton} from "./components/urlButton";
 import {showToast} from "./components/toast";
 import {showSpinner, hideSpinner} from "./components/spinner";
 
@@ -16,20 +16,19 @@ export function mainUnRenderer() {
 
 // Used to Render the UI
 export function mainRenderer() {
-  setTimeout(() => {
+  setTimeout(async () => {
     let [button, spinner] = addUrlButton();
-
     button.disabled = false;
     chrome.runtime
-      .sendMessage({ message: "hasAddedLink", url: window.location.href })
+      .sendMessage({message: "hasAddedLink", url: window.location.href})
       .then((result) => {
         action = result.exists ? "Remove" : "Add";
         let message = result.exists ? "linkedinRemove" : "linkedinAdd";
 
-        if (result.exists){ 
+        if (result.exists) {
           addShareButton(button);
           addNotesUI();
-        } else{
+        } else {
           removeShareButton();
           removeNotesUI();
         }
@@ -41,7 +40,6 @@ export function mainRenderer() {
         // we use onclick here instead of adding an event listener to prevent duplicate clicks
         button.onclick = async () => {
           button.disabled = true;
-
 
           if (!spinner) {
             spinner = document.getElementById("spinner");
@@ -71,7 +69,7 @@ export function mainRenderer() {
               action = "Remove";
               message = "linkedinRemove";
 
-              if (!document.getElementById("shareButton")){
+              if (!document.getElementById("shareButton")) {
                 addShareButton(button);
                 addNotesUI();
               }

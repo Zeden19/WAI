@@ -1,10 +1,10 @@
 import { collection, doc, getDocs, query, where } from "firebase/firestore";
-import db from "../background";
+import db from "../firebase";
 import { getLoggedInUser } from "./utils";
 
 
-const profilesRef = db.collection("profiles");
-const notesRef = db.collection("notes");
+const profilesRef = collection(db, "profiles");
+const notesRef = collection(db, "notes");
 
 
 async function getNote(email, url) {
@@ -13,7 +13,6 @@ async function getNote(email, url) {
     const q = query(profilesRef, where("adderEmail", "==", email), where("link", "==", url))
     return await getDocs(q);
 }
-
 
 export const getNotesUserList = async(email) => {
     return await profilesRef.where("adderEmail", "==", email).get();
@@ -24,8 +23,6 @@ export const getNotesProfileList = async (linkedInProfile, sendResponse) => {S
     if(email === false){ return }
 
     // Check Perms
-
-
 }
 
 

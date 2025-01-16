@@ -1,27 +1,12 @@
-import {
-    addDoc,
-    arrayUnion,
-    collection,
-    deleteDoc,
-    doc,
-    getDocs,
-    getDoc,
-    getFirestore,
-    query,
-    setDoc,
-    updateDoc,
-    where,
-    arrayRemove,
-    or,
-} from "firebase/firestore"
-import db from "../background"
-import {getProfileSlug, getLoggedInUser} from "./utils";
+import {collection, deleteDoc, doc, getDocs, query, setDoc, where} from "firebase/firestore"
+import db from "../firebase"
+import {getLoggedInUser, getProfileSlug} from "./utils";
 
-const usersRef = db.collection("users");
-const profilesRef = db.collection("profiles");
-const notesRef = db.collection("notes");
+const profilesRef = collection(db, "profiles");
+const notesRef = collection(db, "notes");
 
-async function _getLinkedInProfile(adderEmail, url) {
+//todo rename this
+export async function _getLinkedInProfile(adderEmail, url) {
     // TODO Index this shit lmao (composite index)
 
     // Meant for when you own the profile
@@ -36,20 +21,19 @@ async function _getLinkedInProfile(adderEmail, url) {
     
     return await query.get();
 }
- 
-
 
 // GET, SET AND DELETE
 export const getLinkedInProfile = async (url, sendResponse) => {
-    const data = getLoggedInUser(sendResponse); if (!data) return;
+    const data = await getLoggedInUser(sendResponse);
+    if (!data) return;
 
     const querySnapshot = await _getLinkedInProfile(data.user.email, url);
     sendResponse({exists: !querySnapshot.empty});
 }
 
-
 export const setLinkedInProfile = async (url, sendResponse) => {
-    const data = getLoggedInUser(sendResponse); if (!data) return;
+    const data = await getLoggedInUser(sendResponse);
+    if (!data) return;
 
     // Removes the weird /?originalSubdomain crap that sometimes happen for urls
     url = url.replace('/?originalSubdomain', '');
@@ -78,20 +62,22 @@ export const setLinkedInProfile = async (url, sendResponse) => {
     sendResponse({profileDocResponse})
 }
 
-
 // need to be updated
-export const removeLinkedinProfile = async (url, sendResponse) => {
-    const data = getLoggedInUser(sendResponse); if (!data) return;
+export const deleteLinkedinProfile = async (url, sendResponse) => {
+    const data = await getLoggedInUser(sendResponse);
+    if (!data) return;
+
+    console.log(data)
 
     const querySnapshotProfiles = await _getLinkedInProfile(data.user.email, url);
     for (const document of querySnapshotProfiles.docs) {
         await deleteDoc(doc(db, "profiles", document.id));
     }
 
-    const querySnapshotNotes = await _getLinkedInProfileNotes(data.user.email, url);
-    for (const document of querySnapshotNotes.docs) {
-        await deleteDoc(doc(db, "notes", document.id));
-    }
+    // const querySnapshotNotes = await _getLinkedInProfileNotes(data.user.email, url);
+    // for (const document of querySnapshotNotes.docs) {
+    //     await deleteDoc(doc(db, "notes", document.id));
+    // }
 
-    sendResponse({success: true})    
+    sendResponse({success: true})
 }
