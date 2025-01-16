@@ -30,7 +30,8 @@ const addPostNotes = () => {
     postNotePostButton.style.backgroundColor = "rgb(10, 102, 194)";
     postNotePostButton.style.color = "white";
     postNotePostButton.style.border = "none";
-    postNotePostButton.style.borderRadius = "var(--corner-radius-large)!important";
+    postNotePostButton.style.borderRadius =
+        "var(--corner-radius-large)!important";
     postNotePostButton.style.fontSize = "1.5rem";
     postNotePostButton.style.fontWeight = "bold";
 
@@ -42,10 +43,9 @@ const addPostNotes = () => {
     postNotePostButton.style.paddingLeft = "2rem";
     postNotePostButton.style.paddingRight = "2rem";
 
-
-	// Previous Button
-	postNotePreviousButton.innerText = "See All Notes"
-	postNotePreviousButton.style.margin = "1.6rem"
+    // Previous Button
+    postNotePreviousButton.innerText = "See All Notes";
+    postNotePreviousButton.style.margin = "1.6rem";
 
     // Posting Changes to Notes
     const postNewNotes = async () => {
@@ -56,13 +56,13 @@ const addPostNotes = () => {
 
         const newNote = await chrome.runtime.sendMessage({
             message: "newNote",
-            noteText: notesTextArea.value
-        })
+            noteText: notesTextArea.value,
+        });
 
         if (newNote?.error) {
             showToast(newNote.error, "error");
         } else {
-            showToast("Note created successfully", "success")
+            showToast("Note created successfully", "success");
         }
 
         confirmButton.disabled = false;
@@ -73,44 +73,32 @@ const addPostNotes = () => {
         // set id of the newly created element (newNote.id)
     };
 
-    postNotePostButton.addEventListener("click", async () => {await postNewNotes()});
+    postNotePostButton.addEventListener("click", async () => {
+        await postNewNotes();
+    });
 };
 
+const removePostNotes = () => {};
 
-
-const removePostNotes = () => {}
-
-
-const addAllNotes =  () => {
-
-	// Previous Button
-	allNotesPreviousButton.innerText = "See All Notes"
-	allNotesPreviousButton.style.margin = "1.6rem"
-
+const addAllNotes = () => {
+    // Previous Button
+    allNotesPreviousButton.innerText = "See All Notes";
+    allNotesPreviousButton.style.margin = "1.6rem";
 
     // getting the notes
     //const notes = await chrome.runtime.sendMessage({message: "getNoteList",})
 
-	const testHeader = document.createElement("h2");
+    const testHeader = document.createElement("h2");
     testHeader.textContent = "Test Header";
-	allNoteScrollArea.appendChild(testHeader)
+    allNoteScrollArea.appendChild(testHeader);
 
-
-
-
-	const renderIndividualPost = (note) => {
-		
-	}
+    const renderIndividualPost = (note) => {};
 
     notes?.forEach((note) => {
         renderIndividualPost(note);
     });
-
-
 };
-const removeAllNotes = () => {
-};
-
+const removeAllNotes = () => {};
 
 // to maintain css element between calls/renders
 let notesUI = null;
@@ -125,84 +113,87 @@ let allNoteUI = null;
 let allNoteScrollArea = null;
 let allNotesPreviousButton = null;
 
-
-
 export const addNotesUI = () => {
     notesUI = document.getElementById("notesUI"); // parent element for the entire notesUI
 
-	// Posting Area
-	postNoteUI = document.getElementById("postNoteUI")
-	postNoteTitle = document.getElementById("postNoteUI")
-	postNoteBody = document.getElementById("notesArea"); 
-	postNotePostButton = document.getElementById("notesPostButton"); 
-	postNotePreviousButton = document.getElementById("notesPreviousButton");
+    // Posting Area
+    postNoteUI = document.getElementById("postNoteUI");
+    postNoteTitle = document.getElementById("postNoteUI");
+    postNoteBody = document.getElementById("notesArea");
+    postNotePostButton = document.getElementById("notesPostButton");
+    postNotePreviousButton = document.getElementById("notesPreviousButton");
 
-	// Previous Notes
-	allNoteUI = document.getElementById("allNotesUI"); 
-	allNoteScrollArea = document.getElementById("allNoteScrollArea"); 
-	allNotesPreviousButton = document.getElementById("allNotesPreviousButton"); 
+    // Previous Notes
+    allNoteUI = document.getElementById("allNotesUI");
+    allNoteScrollArea = document.getElementById("allNoteScrollArea");
+    allNotesPreviousButton = document.getElementById("allNotesPreviousButton");
 
     // Renders and creates the text area for notes
-	if(!notesUI) {
-		const parentUI = document.querySelector(".ph5");
+    if (!notesUI) {
+        const parentUI = document.querySelector(".ph5");
         notesUI = document.createElement("div");
         notesUI.id = "notesUI";
         notesUI.classList.add("notesUI");
         parentUI.appendChild(notesUI);
-	}
+    }
 
     // If postNoteUI hasn't been created yet, we create it
-	if(!postNoteUI || !postNoteTitle || !postNoteBody || !postNotePostButton || !postNotePreviousButton) {
+    if (
+        !postNoteUI ||
+        !postNoteTitle ||
+        !postNoteBody ||
+        !postNotePostButton ||
+        !postNotePreviousButton
+    ) {
         postNoteUI = document.createElement("textarea");
-		postNoteUI.id = "postNoteUI"
-		postNoteUI.style.display = "none";	// All notes is default display
-        notesUI.appendChild(postNoteUI); 
+        postNoteUI.id = "postNoteUI";
+        postNoteUI.style.display = "none"; // All notes is default display
+        notesUI.appendChild(postNoteUI);
 
         postNoteTitle = document.createElement("h2");
-		postNoteUI.id = "postNoteTitle"
-        postNoteUI.appendChild(postNoteTitle); 
+        postNoteUI.id = "postNoteTitle";
+        postNoteUI.appendChild(postNoteTitle);
 
         postNoteBody = document.createElement("textarea");
-		postNoteUI.id = "postNoteBody"
-        postNoteUI.appendChild(postNoteBody); 
+        postNoteUI.id = "postNoteBody";
+        postNoteUI.appendChild(postNoteBody);
 
         postNotePostButton = document.createElement("button");
-		postNoteUI.id = "postNotePostButton"
-        postNoteUI.appendChild(postNotePostButton); 
+        postNoteUI.id = "postNotePostButton";
+        postNoteUI.appendChild(postNotePostButton);
 
         postNotePreviousButton = document.createElement("button");
-        postNotePreviousButton.id = "notesPreviousButton"
+        postNotePreviousButton.id = "notesPreviousButton";
         postNoteUI.appendChild(postNotePreviousButton);
 
-		addPostNotes();
+        addPostNotes();
     }
 
     // If allNotesUI hasn't created yet, we create it
-    if(!allNoteUI || !allNoteScrollArea || !allNotesPreviousButton) {
+    if (!allNoteUI || !allNoteScrollArea || !allNotesPreviousButton) {
         allNoteUI = document.createElement("div");
-		allNoteUI.id = "allNoteUI";	// All notes is default display
-		notesUI.appendChild(allNoteUI);
+        allNoteUI.id = "allNoteUI"; // All notes is default display
+        notesUI.appendChild(allNoteUI);
 
         allNoteScrollArea = document.createElement("div");
-		allNoteScrollArea.id = "allNoteScrollArea";
-		allNoteUI.appendChild(allNoteScrollArea);
+        allNoteScrollArea.id = "allNoteScrollArea";
+        allNoteUI.appendChild(allNoteScrollArea);
 
         allNotesPreviousButton = document.createElement("button");
-		allNotesPreviousButton.id = "allNotesPreviousButton";
-		allNoteUI.appendChild(allNotesPreviousButton);
+        allNotesPreviousButton.id = "allNotesPreviousButton";
+        allNoteUI.appendChild(allNotesPreviousButton);
 
         addAllNotes();
     }
 
-
-	postNotePreviousButton.addEventListener("click", () => {
-		postNoteUI.style.display = "none"
-		allNoteUI.style.display = "flex";
-	});
-	allNotesPreviousButton.addEventListener("click", () => {
-		allNoteUI.style.display = "none";
-		postNoteUI.style.display = "flex"
-	});
+    postNotePreviousButton.addEventListener("click", () => {
+        postNoteUI.style.display = "none";
+        allNoteUI.style.display = "flex";
+    });
+    allNotesPreviousButton.addEventListener("click", () => {
+        allNoteUI.style.display = "none";
+        postNoteUI.style.display = "flex";
+    });
 };
 
 export const removeNotesUI = () => {

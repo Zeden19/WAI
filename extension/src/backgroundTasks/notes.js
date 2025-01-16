@@ -1,7 +1,15 @@
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import {
+    addDoc,
+    collection,
+    deleteDoc,
+    doc,
+    getDocs,
+    query,
+    where,
+} from "firebase/firestore";
 import db from "../firebase";
 import { getCurrentTabUrl, getLoggedInUser } from "./utils";
-import { _getLinkedInProfile, getLinkedInProfile } from "./profiles";
+import { _getLinkedInProfile } from "./profiles";
 
 const profilesRef = collection(db, "profiles");
 
@@ -30,30 +38,25 @@ export const getNotesProfileList = async (linkedInProfile, sendResponse) => {
 
 export const setNote = async (profile) => {
     // create note sub-collection within new profile
-    const notesSubCollection = collection(
-        db,
-        "profiles",
-        profile.id,
-        "notes",
-    );
+    const notesSubCollection = collection(db, "profiles", profile.id, "notes");
 
     // we have to add a doc to the new collection
     await addDoc(notesSubCollection, {
         lastUpdated: null,
         text: null,
-        created: null
+        created: null,
     });
 };
 
 export const newNote = async (noteText, sendResponse) => {
     // getting all info
     const { user } = await getLoggedInUser();
-    const url = await getCurrentTabUrl()
+    const url = await getCurrentTabUrl();
     const profile = await _getLinkedInProfile(user.email, url);
 
     if (!user || !url || !profile) {
         console.error(`user: ${user}, url: ${url}, profile: ${profile}`);
-        sendResponse({error: "Something went wrong. Please try again."})
+        sendResponse({ error: "Something went wrong. Please try again." });
     }
     const profileId = profile.docs[0].id;
 
@@ -65,9 +68,29 @@ export const newNote = async (noteText, sendResponse) => {
         created: new Date(),
     });
 
-    sendResponse({success: true, id: newNote.id});
-}
+    sendResponse({ success: true, id: newNote.id });
+};
 
 export const updateNotes = () => {};
 
-export const removeNote = () => {};
+export const removeNote = async (noteId, sendResponse) => {
+    const { user } = await getLoggedInUser();
+    const url = await getCurrentTabUrl();
+    const profile = await _getLinkedInProfile(user.email, url);
+
+    if (!user || !url || !profile) {
+        console.error(`user: ${user}, url: ${url}, profile: ${profile}`);
+        sendResponse({ error: "Something went wrong. Please try again." });
+    }
+    const profileId = profile.docs[0].id;
+
+    // removing from collection
+    const noteDoc = doc(db, "profiles", profileId, "notes", noteId);
+
+    try {
+        await deleteDoc(noteDoc);
+        sendResponse({ success: true });
+    } catch (e) {
+        sendResponse({ error: "Something went wrong. Please try again." });
+    }
+};

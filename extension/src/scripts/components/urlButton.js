@@ -52,6 +52,7 @@ export const addUrlButton = () => {
         buttonList.style.flexWrap = "wrap";
         buttonList.style.rowGap = "10px";
     }
+    button.disabled = false;
     return [button, spinner];
 };
 

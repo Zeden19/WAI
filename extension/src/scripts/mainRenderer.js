@@ -1,8 +1,6 @@
 import { addShareButton, removeShareButton } from "./components/shareButton";
 import { addNotesUI, removeNotesUI } from "./components/notes";
 import { addUrlButton, setUrlButtonAction } from "./components/urlButton";
-import { showToast } from "./components/toast";
-import { showSpinner, hideSpinner } from "./components/spinner";
 
 let action = "Add";
 
@@ -17,7 +15,6 @@ export function mainUnRenderer() {
 export function mainRenderer() {
     setTimeout(async () => {
         let [button, spinner] = addUrlButton();
-        button.disabled = false;
         const result = await chrome.runtime.sendMessage({
             message: "hasAddedLink",
             url: window.location.href,
@@ -34,54 +31,6 @@ export function mainRenderer() {
             removeNotesUI();
         }
 
-        button.innerText = `${action} URL`;
-
-        // we use onclick here instead of adding an event listener to prevent duplicate clicks
-        button.onclick = async () => {
-            button.disabled = true;
-
-            if (!spinner) {
-                spinner = document.getElementById("spinner");
-            }
-
-            showSpinner(spinner);
-            const data = await chrome.runtime.sendMessage({
-                message,
-                url: window.location.href,
-            });
-            hideSpinner(spinner);
-
-            if (data.error) {
-                button.disabled = false;
-                showToast(
-                    `Could not ${action.toLowerCase()} link: ${data.error}`,
-                    "error",
-                );
-            } else {
-                showToast(
-                    `Link successfully ${action.toLowerCase()}ed!`,
-                    "success",
-                );
-
-                // Toggle action and message for next click
-                if (action === "Add") {
-                    action = "Remove";
-                    message = "linkedinRemove";
-
-                    if (!document.getElementById("shareButton")) {
-                        addShareButton(button);
-                        addNotesUI();
-                    }
-                } else {
-                    action = "Add";
-                    message = "linkedinAdd";
-                    removeShareButton();
-                    removeNotesUI();
-                }
-
-                button.innerText = `${action} URL`;
-                button.disabled = false;
-            }
-        };
+        setUrlButtonAction(action, message);
     }, 1500);
 }

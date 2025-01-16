@@ -3,16 +3,17 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
     entry: {
-        "background": "./src/background.js",
-        "firebase": "./src/firebase.js",
-        "offscreen": "./src/offscreen.js",
-        "signInPopup": "./src/signInPopup.js",
+        background: "./src/background.js",
+        firebase: "./src/firebase.js",
+        offscreen: "./src/offscreen.js",
+        signInPopup: "./src/signInPopup.js",
         "scripts/linkedin": "./src/scripts/linkedin.js",
         "scripts/mainRenderer": "./src/scripts/mainRenderer.js",
 
         // Major UI Components
         "scripts/components/urlButton": "./src/scripts/components/urlButton.js",
-        "scripts/components/shareButton": "./src/scripts/components/shareButton.js",
+        "scripts/components/shareButton":
+            "./src/scripts/components/shareButton.js",
         "scripts/components/notes": "./src/scripts/components/notes.js",
 
         // Minor Components

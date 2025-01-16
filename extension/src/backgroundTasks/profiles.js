@@ -1,17 +1,17 @@
 import {
+    addDoc,
+    and,
     collection,
     deleteDoc,
     doc,
     getDoc,
     getDocs,
-    query,
-    addDoc,
-    where,
     or,
-    and,
+    query,
+    where,
 } from "firebase/firestore";
 import db from "../firebase";
-import { getLoggedInUser, getProfileSlug } from "./utils";
+import { getLoggedInUser } from "./utils";
 import { setNote } from "./notes";
 
 const profilesRef = collection(db, "profiles");
@@ -84,4 +84,3 @@ export const deleteLinkedinProfile = async (url, sendResponse) => {
 
     sendResponse({ success: true });
 };
-

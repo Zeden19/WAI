@@ -12,7 +12,8 @@ import {
 import {
     getNotesProfileList,
     setNote,
-    removeNote, newNote
+    removeNote,
+    newNote,
 } from "./backgroundTasks/notes";
 import db from "./firebase";
 
@@ -111,13 +112,6 @@ const handleSignIn = async (sendResponse) => {
 };
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    // Sanitizing URL (dropping search params)
-    if (request.url) {
-        const urlObject = new URL(request.url);
-        urlObject.search = "";
-        request.url = urlObject.toString();
-    }
-
     switch (request.message) {
         case "signIn":
             handleSignIn(sendResponse); // this is required, we cannot inline or else we can't return data to sender due to async
@@ -132,8 +126,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         case "linkedinRemove":
             deleteLinkedinProfile(sendResponse);
             break;
-
-
         case "getEmailList":
             getEmailList(sendResponse);
             break;
@@ -143,18 +135,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         case "removeShareProfile":
             removeShareProfile(request.email, sendResponse);
             break;
-
-
         case "getNoteList":
             getNotesProfileList(sendResponse);
             break;
         case "removeNote":
-            removeNote(
-                request.url,
-                request.email,
-                request.noteID,
-                sendResponse,
-            );
+            removeNote(request.noteID, sendResponse);
             break;
         case "setNote":
             setNote(request.noteContent, sendResponse);
@@ -162,7 +147,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
         case "newNote":
             newNote(request.noteText, sendResponse);
-            break
+            break;
 
         default:
             // Handle unknown message type if necessary
