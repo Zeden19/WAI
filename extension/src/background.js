@@ -3,17 +3,17 @@ import {
     getEmailList,
     removeShareProfile,
     setShareProfile,
-} from "./backgroundTasks/shareUsersFB";
+} from "./backgroundTasks/shareUsers";
 import {
     getLinkedInProfile,
     setLinkedInProfile,
     deleteLinkedinProfile,
-} from "./backgroundTasks/profilesFB";
+} from "./backgroundTasks/profiles";
 import {
     getNotesProfileList,
     setNote,
-    removeNote,
-} from "./backgroundTasks/notesFB";
+    removeNote, newNote
+} from "./backgroundTasks/notes";
 import db from "./firebase";
 
 const OFFSCREEN_DOCUMENT_PATH = "./offscreen.html";
@@ -112,9 +112,11 @@ const handleSignIn = async (sendResponse) => {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     // Sanitizing URL (dropping search params)
-    const urlObject = new URL(request.url);
-    urlObject.search = "";
-    request.url = urlObject.toString();
+    if (request.url) {
+        const urlObject = new URL(request.url);
+        urlObject.search = "";
+        request.url = urlObject.toString();
+    }
 
     switch (request.message) {
         case "signIn":
@@ -161,6 +163,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         case "setNote":
             setNote(request.url, request.email, sendResponse);
             break;
+
+        case "newNote":
+            newNote(request.noteText, sendResponse);
+            break
 
         default:
             // Handle unknown message type if necessary

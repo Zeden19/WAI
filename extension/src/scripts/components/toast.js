@@ -6,7 +6,7 @@ export function showToast(message, type = "default") {
     // Append the toast to the body
     document.body.appendChild(toast);
 
-    toast.style.borderLeft = `7px solid ${type === "error" ? "error" : type === "success" ? "green" : "gray"}`;
+    toast.style.borderLeft = `7px solid ${type === "error" ? "red" : type === "success" ? "green" : "gray"}`;
 
     // Trigger transition in
     setTimeout(() => {

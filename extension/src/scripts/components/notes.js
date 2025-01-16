@@ -49,21 +49,29 @@ const addNoteTitle = () => {
     confirmButton.style.paddingRight = "2rem";
 
     // Posting Changes to Notes
-    const postNewNotes = () => {
+    const postNewNotes = async () => {
         confirmButton.disabled = true;
         notesTextArea.disabled = true;
         confirmButton.innerText = "Saving...";
         confirmButton.style.backgroundColor = "rgb(80, 144, 207)";
 
-        // Push
+        const newNote = await chrome.runtime.sendMessage({
+            message: "newNote",
+            noteText: notesTextArea.value
+        })
 
-        setTimeout(() => {
-            showToast("Notes Saved", "success");
-            confirmButton.disabled = false;
-            notesTextArea.disabled = false;
-            confirmButton.innerText = "Save";
-            confirmButton.style.backgroundColor = "rgb(10, 102, 194)";
-        }, 2000);
+        if (newNote?.error) {
+            showToast(newNote.error, "error");
+        } else {
+            showToast("Note created successfully", "success")
+        }
+
+        confirmButton.disabled = false;
+        notesTextArea.disabled = false;
+        confirmButton.innerText = "Save";
+        confirmButton.style.backgroundColor = "rgb(10, 102, 194)";
+
+        // set id of the newly created element (newNote.id)
     };
     confirmButton.addEventListener("click", postNewNotes);
 };

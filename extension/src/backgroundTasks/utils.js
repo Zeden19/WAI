@@ -19,3 +19,18 @@ export const getLoggedInUser = () => {
         });
     });
 };
+
+export const sanitizeURL = (url) => {
+    // Sanitizing URL (dropping search params)
+    const urlObject = new URL(url);
+    urlObject.search = "";
+    return urlObject.toString();
+};
+
+export const getCurrentTabUrl = async () => {
+    const [tab] = await chrome.tabs.query({
+        active: true,
+        currentWindow: true,
+    });
+    return sanitizeURL(tab.url);
+};

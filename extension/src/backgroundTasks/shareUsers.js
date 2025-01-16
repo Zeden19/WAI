@@ -8,7 +8,7 @@ import {
 } from "firebase/firestore";
 import db from "../firebase";
 import { getLoggedInUser } from "./utils";
-import { _getLinkedInProfile } from "./profilesFB";
+import { _getLinkedInProfile } from "./profiles";
 
 /* Sharing Feature */
 // can we cache this information? doing this everytime for each linkedin page seems inefficient
