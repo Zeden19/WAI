@@ -13,7 +13,7 @@ module.exports = {
     // Major UI Components
     urlButton: "./src/scripts/components/urlButton.js",
     shareButton: "./src/scripts/components/shareButton.js",
-    notes: "./src/scripts/components/notesFB.js",
+    notes: "./src/scripts/components/notes.js",
 
     // Minor Components
     spinner: "./src/scripts/components/spinner.js",
@@ -21,9 +21,9 @@ module.exports = {
 
     // Background Tasks
     notesF: "./src/backgroundTasks/notesFB.js",
-    profile: "./src/backgroundTasks/profiles.js",
-    shareUsers: "./src/backgroundTasks/shareUsers.js",
-    notes: "./src/backgroundTasks/notesFB.js",
+    profileFB: "./src/backgroundTasks/profilesFB.js",
+    shareUsersFB: "./src/backgroundTasks/shareUsersFB.js",
+    notesFB: "./src/backgroundTasks/notesFB.js",
     profile: "./src/backgroundTasks/profilesFB.js",
     shareUsers: "./src/backgroundTasks/shareUsersFB.js",
     utils: "./src/backgroundTasks/utils.js"

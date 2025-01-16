@@ -1,7 +1,7 @@
 import {arrayRemove, arrayUnion, collection, doc, getDocs, updateDoc} from "firebase/firestore";
 import db from "../firebase";
 import {getLoggedInUser} from "./utils";
-import {_getLinkedInProfile, getLinkedInProfile} from "./profiles";
+import {_getLinkedInProfile} from "./profilesFB";
 
 /* Sharing Feature */
 // can we cache this information? doing this everytime for each linkedin page seems inefficient

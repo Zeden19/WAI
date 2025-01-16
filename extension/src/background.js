@@ -1,6 +1,6 @@
 import {doc, setDoc} from "firebase/firestore"
-import {getEmailList, removeShareProfile, setShareProfile} from "./backgroundTasks/shareUsers";
-import {getLinkedInProfile, setLinkedInProfile, deleteLinkedinProfile} from "./backgroundTasks/profiles";
+import {getEmailList, removeShareProfile, setShareProfile} from "./backgroundTasks/shareUsersFB";
+import {getLinkedInProfile, setLinkedInProfile, deleteLinkedinProfile} from "./backgroundTasks/profilesFB";
 import {getNotesProfileList, setNote, removeNote} from "./backgroundTasks/notesFB";
 import db from "./firebase"
 
