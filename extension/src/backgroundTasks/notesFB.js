@@ -20,7 +20,6 @@ export const getNotesUserList = async (email) => {
 };
 
 export const getNotesProfileList = async (linkedInProfile, sendResponse) => {
-  S;
   const email = getLoggedInUser(sendResponse);
   if (email === false) {
     return;

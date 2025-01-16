@@ -8,6 +8,8 @@ import {
   setDoc,
   addDoc,
   where,
+  or,
+  and,
 } from "firebase/firestore";
 import db from "../firebase";
 import { getLoggedInUser, getProfileSlug } from "./utils";
@@ -19,17 +21,26 @@ const notesRef = collection(db, "notes");
 export async function _getLinkedInProfile(adderEmail, url) {
   // TODO Index this shit lmao (composite index)
 
-  // Meant for when you own the profile
+  // Check Who Shares
   const docRef = await getDoc(doc(db, "users", adderEmail));
   console.log(docRef.data());
   const shareEmailList = docRef.data().accountsSharedWith;
+
+  //
+
   shareEmailList.push(adderEmail);
 
   const q = query(
     profilesRef,
-    where("adderEmail", "in", shareEmailList),
-    where("link", "==", url),
+    and(
+      or(
+        where("adderEmail", "in", shareEmailList),
+        where("sharedWith", "array-contains", adderEmail),
+      ),
+      where("link", "==", url),
+    ),
   );
+  
   return await getDocs(q);
 }
 
@@ -46,10 +57,6 @@ export const setLinkedInProfile = async (url, sendResponse) => {
   const data = await getLoggedInUser(sendResponse);
   if (!data) return;
 
-  // Removes the weird /?originalSubdomain crap that sometimes happen for urls
-  url = url.replace("/?originalSubdomain", "");
-  url = url.replace("%2F%3ForiginalSubdomain%3", "");
-
   const profilesDocRef = collection(db, "profiles");
   const profileDocId = profilesDocRef.id;
   const profileDocResponse = await addDoc(profilesDocRef, {
@@ -60,7 +67,7 @@ export const setLinkedInProfile = async (url, sendResponse) => {
   });
 
   const noteDocRef = doc(db, "notes", `${profileDocId}-note`);
-  await setDoc(noteDocRef, {
+  await addDoc(noteDocRef, {
     profileRef: profilesDocRef.path, // Reference to the 'profiles' document
     timestamp: new Date(),
   });

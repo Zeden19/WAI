@@ -111,6 +111,12 @@ const handleSignIn = async (sendResponse) => {
 };
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+
+  // Sanitizing URL (dropping search params)
+  const urlObject = new URL(request.url);
+  urlObject.search = "";
+  request.url = urlObject.toString();
+
   switch (request.message) {
     case "signIn":
       handleSignIn(sendResponse); // this is required, we cannot inline or else we can't return data to sender due to async
