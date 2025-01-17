@@ -17,7 +17,7 @@ import { setNote } from "./notes";
 const profilesRef = collection(db, "profiles");
 
 //todo rename this
-export async function _getLinkedInProfile() {
+export async function getLinkedInProfile(sendResponse) {
     // TODO Index this shit lmao (composite index)
 
     // Check Who Shares
@@ -43,22 +43,14 @@ export async function _getLinkedInProfile() {
         ),
     );
 
-    return await getDocs(q);
-}
-
-// GET, SET AND DELETE
-export const getLinkedInProfile = async (sendResponse) => {
-    const user = await getLoggedInUser(sendResponse);
-    const url = await getCurrentTabUrl();
-    if (!user || !url) {
-        console.error("user or url is undefined");
-        sendResponse({ error: "Something went wrong" });
+    if (sendResponse) {
+        const profile = await getDocs(q);
+        sendResponse({empty: profile.empty})
         return;
     }
 
-    const querySnapshot = await _getLinkedInProfile();
-    sendResponse({ exists: !querySnapshot.empty });
-};
+    return await getDocs(q);
+}
 
 export const setLinkedInProfile = async (sendResponse) => {
     const user = await getLoggedInUser(sendResponse);
@@ -83,15 +75,11 @@ export const setLinkedInProfile = async (sendResponse) => {
 
 // need to be updated
 export const deleteLinkedinProfile = async (sendResponse) => {
-    const user = await getLoggedInUser(sendResponse);
-    const url = await getCurrentTabUrl();
-    if (!user || !url) {
-        console.error("user is undefined");
+    const querySnapshotProfiles = await getLinkedInProfile();
+    if (!querySnapshotProfiles) {
         sendResponse({ error: "Something went wrong" });
         return;
     }
-
-    const querySnapshotProfiles = await _getLinkedInProfile(url);
     for (const document of querySnapshotProfiles.docs) {
         await deleteDoc(doc(db, "profiles", document.id));
     }

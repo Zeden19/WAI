@@ -5,9 +5,9 @@ import {
     setShareProfile,
 } from "./backgroundTasks/shareUsers";
 import {
-    getLinkedInProfile,
     setLinkedInProfile,
     deleteLinkedinProfile,
+    getLinkedInProfile,
 } from "./backgroundTasks/profiles";
 import {
     getNotesProfileList,
@@ -147,7 +147,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             newNote(request.noteText, sendResponse);
             break;
         case "getNotesList":
-
 
         default:
             // Handle unknown message type if necessary

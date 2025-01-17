@@ -8,7 +8,7 @@ import {
 } from "firebase/firestore";
 import db from "../firebase";
 import { getCurrentTabUrl, getLoggedInUser } from "./utils";
-import { _getLinkedInProfile } from "./profiles";
+import { getLinkedInProfile } from "./profiles";
 
 /* Sharing Feature */
 // can we cache this information? doing this everytime for each linkedin page seems inefficient
@@ -43,7 +43,7 @@ export const getEmailList = async (sendResponse) => {
 };
 
 export const setShareProfile = async (recipientEmail, sendResponse) => {
-    const querySnapshot = await _getLinkedInProfile();
+    const querySnapshot = await getLinkedInProfile();
 
     if (querySnapshot.empty) {
         console.error("User has not added link")
@@ -59,7 +59,7 @@ export const setShareProfile = async (recipientEmail, sendResponse) => {
 };
 
 export const removeShareProfile = async (recipientEmail, sendResponse) => {
-    const querySnapshot = await _getLinkedInProfile();
+    const querySnapshot = await getLinkedInProfile();
     console.log(querySnapshot);
 
     if (querySnapshot.empty) {

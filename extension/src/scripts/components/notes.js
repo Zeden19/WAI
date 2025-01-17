@@ -1,5 +1,17 @@
-import { doc, DocumentReference } from "firebase/firestore";
 import { showToast } from "./toast";
+
+// to maintain css element between calls/renders
+let notesUI = null;
+
+let postNoteUI = null;
+let postNoteTitle = null;
+let postNoteBody = null;
+let postNotePostButton = null;
+let postNotePreviousButton = null;
+
+let allNoteUI = null;
+let allNoteScrollArea = null;
+let allNotesPreviousButton = null;
 
 // TODO: Adding a Title Feature
 const addPostNotes = () => {
@@ -101,20 +113,8 @@ const addAllNotes = async () => {
         renderIndividualPost(note);
     });
 };
+
 const removeAllNotes = () => {};
-
-// to maintain css element between calls/renders
-let notesUI = null;
-
-let postNoteUI = null;
-let postNoteTitle = null;
-let postNoteBody = null;
-let postNotePostButton = null;
-let postNotePreviousButton = null;
-
-let allNoteUI = null;
-let allNoteScrollArea = null;
-let allNotesPreviousButton = null;
 
 export const addNotesUI = () => {
     notesUI = document.getElementById("notesUI"); // parent element for the entire notesUI

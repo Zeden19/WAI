@@ -14,16 +14,17 @@ export function mainUnRenderer() {
 // Used to Render the UI
 export function mainRenderer() {
     setTimeout(async () => {
-        let [button, spinner] = addUrlButton();
+        let [button] = addUrlButton();
         const result = await chrome.runtime.sendMessage({
             message: "hasAddedLink",
             url: window.location.href,
         });
 
-        action = result.exists ? "Remove" : "Add";
-        let message = result.exists ? "linkedinRemove" : "linkedinAdd";
+        const profileExists = !result.empty;
+        action = profileExists ? "Remove" : "Add";
+        let message = profileExists ? "linkedinRemove" : "linkedinAdd";
 
-        if (result.exists) {
+        if (profileExists) {
             addShareButton(button);
             addNotesUI();
         } else {

@@ -8,8 +8,7 @@ import {
     where,
 } from "firebase/firestore";
 import db from "../firebase";
-import { getCurrentTabUrl, getLoggedInUser } from "./utils";
-import { _getLinkedInProfile } from "./profiles";
+import { getLinkedInProfile } from "./profiles";
 
 const profilesRef = collection(db, "profiles");
 
@@ -29,8 +28,9 @@ export const getNotesUserList = async (email) => {
     return await profilesRef.where("adderEmail", "==", email).get();
 };
 
+// Gets all notes from a specific profile
 export const getNotesProfileList = async (sendResponse) => {
-    const linkedinProfile = await _getLinkedInProfile()
+    const linkedinProfile = await getLinkedInProfile()
 
     if (!linkedinProfile) {
         sendResponse({error: "Something went wrong"});
@@ -58,7 +58,7 @@ export const setNote = async (profile) => {
 
 export const newNote = async (noteText, sendResponse) => {
     // getting all info
-    const profile = await _getLinkedInProfile();
+    const profile = await getLinkedInProfile();
 
     if (!user || !url || !profile) {
         console.error(`user: ${user}, url: ${url}, profile: ${profile}`);
@@ -80,7 +80,7 @@ export const newNote = async (noteText, sendResponse) => {
 export const updateNotes = () => {};
 
 export const removeNote = async (noteId, sendResponse) => {
-    const profile = await _getLinkedInProfile();
+    const profile = await getLinkedInProfile();
 
     if (!profile) {
         console.error(`profile: ${profile} not defined`);
