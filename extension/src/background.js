@@ -156,14 +156,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
 });
 
+// extra checks to assure this event does not send a request twice
+// prettier-ignore
 chrome.webNavigation.onHistoryStateUpdated.addListener(
     async function (details) {
-        if (details.url.startsWith("https://www.linkedin.com/in/")) {
-            const [tab] = await chrome.tabs.query({
-                active: true,
-                lastFocusedWindow: true,
+        if (details.frameId === 0) {
+            chrome.tabs.get(details.tabId, async function(tab) {
+                if (details.url.startsWith("https://www.linkedin.com/in/") && tab.url === details.url)
+                    await chrome.tabs.sendMessage(tab.id, {}); // let content worker know that we're on the right page
             });
-            await chrome.tabs.sendMessage(tab.id, {}); // let content worker know that we're on the right page
         }
     },
 );

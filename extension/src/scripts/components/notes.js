@@ -3,6 +3,8 @@ import { showToast } from "./toast";
 // to maintain css element between calls/renders
 let notesUI = null;
 
+let header = null;
+
 let postNoteUI = null;
 let postNoteTitle = null;
 let postNoteBody = null;
@@ -11,7 +13,7 @@ let postNotePreviousButton = null;
 
 let allNoteUI = null;
 let allNoteScrollArea = null;
-let allNotesPreviousButton = null;
+let allNotesButton = null;
 
 // TODO: Adding a Title Feature
 const addPostNotes = () => {
@@ -90,31 +92,26 @@ const addPostNotes = () => {
     });
 };
 
-const removePostNotes = () => {};
-
 const addAllNotes = async () => {
     // Previous Button
-    allNotesPreviousButton.innerText = "See All Notes";
-    allNotesPreviousButton.style.margin = "1.6rem";
+    allNotesButton.innerText = "See All Notes";
+    allNotesButton.style.margin = "1.6rem";
 
     // getting the notes
     const { notes } = await chrome.runtime.sendMessage({
         message: "getNoteList",
     });
 
-    const testHeader = document.createElement("h2");
-    testHeader.textContent = "Test Header";
-    allNoteScrollArea.appendChild(testHeader);
+    header = document.createElement("h2");
+    header.textContent = "Test Header";
+    allNoteScrollArea.appendChild(header);
 
-    const renderIndividualPost = (note) => {
-    };
+    const renderIndividualPost = (note) => {};
 
     notes?.forEach((note) => {
         renderIndividualPost(note);
     });
 };
-
-const removeAllNotes = () => {};
 
 export const addNotesUI = () => {
     notesUI = document.getElementById("notesUI"); // parent element for the entire notesUI
@@ -129,7 +126,7 @@ export const addNotesUI = () => {
     // Previous Notes
     allNoteUI = document.getElementById("allNotesUI");
     allNoteScrollArea = document.getElementById("allNoteScrollArea");
-    allNotesPreviousButton = document.getElementById("allNotesPreviousButton");
+    allNotesButton = document.getElementById("allNotesPreviousButton");
 
     // Renders and creates the text area for notes
     if (!notesUI) {
@@ -173,7 +170,7 @@ export const addNotesUI = () => {
     }
 
     // If allNotesUI hasn't created yet, we create it
-    if (!allNoteUI || !allNoteScrollArea || !allNotesPreviousButton) {
+    if (!allNoteUI || !allNoteScrollArea || !allNotesButton) {
         allNoteUI = document.createElement("div");
         allNoteUI.id = "allNoteUI"; // All notes is default display
         notesUI.appendChild(allNoteUI);
@@ -182,9 +179,9 @@ export const addNotesUI = () => {
         allNoteScrollArea.id = "allNoteScrollArea";
         allNoteUI.appendChild(allNoteScrollArea);
 
-        allNotesPreviousButton = document.createElement("button");
-        allNotesPreviousButton.id = "allNotesPreviousButton";
-        allNoteUI.appendChild(allNotesPreviousButton);
+        allNotesButton = document.createElement("button");
+        allNotesButton.id = "allNotesPreviousButton";
+        allNoteUI.appendChild(allNotesButton);
 
         addAllNotes();
     }
@@ -193,13 +190,14 @@ export const addNotesUI = () => {
         postNoteUI.style.display = "none";
         allNoteUI.style.display = "flex";
     });
-    allNotesPreviousButton.addEventListener("click", () => {
+    allNotesButton.addEventListener("click", () => {
         allNoteUI.style.display = "none";
         postNoteUI.style.display = "flex";
     });
 };
 
 export const removeNotesUI = () => {
-    removeAllNotes();
-    removePostNotes();
+    if (notesUI) {
+        notesUI.innerHTML = "";
+    }
 };

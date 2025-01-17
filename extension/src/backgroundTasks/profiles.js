@@ -16,11 +16,9 @@ import { setNote } from "./notes";
 
 const profilesRef = collection(db, "profiles");
 
-//todo rename this
 export async function getLinkedInProfile(sendResponse) {
     // TODO Index this shit lmao (composite index)
 
-    // Check Who Shares
     const { email: adderEmail } = await getLoggedInUser();
     const url = await getCurrentTabUrl();
     if (!adderEmail || !url) {
@@ -45,7 +43,7 @@ export async function getLinkedInProfile(sendResponse) {
 
     if (sendResponse) {
         const profile = await getDocs(q);
-        sendResponse({empty: profile.empty})
+        sendResponse({ empty: profile.empty });
         return;
     }
 

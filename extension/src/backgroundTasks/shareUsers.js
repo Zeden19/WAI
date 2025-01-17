@@ -17,9 +17,9 @@ export const getEmailList = async (sendResponse) => {
     const url = await getCurrentTabUrl();
     const user = await getLoggedInUser(sendResponse);
     if (!user) {
-        sendResponse({error: "Something went wrong"});
+        sendResponse({ error: "Something went wrong" });
         console.error("user undefined");
-        return
+        return;
     }
 
     const querySnapshot = await getDocs(collection(db, "users"));
@@ -46,7 +46,7 @@ export const setShareProfile = async (recipientEmail, sendResponse) => {
     const querySnapshot = await getLinkedInProfile();
 
     if (querySnapshot.empty) {
-        console.error("User has not added link")
+        console.error("User has not added link");
         sendResponse({ error: "You have not added this link" });
         return;
     }
@@ -63,7 +63,7 @@ export const removeShareProfile = async (recipientEmail, sendResponse) => {
     console.log(querySnapshot);
 
     if (querySnapshot.empty) {
-        console.error("User has not added link")
+        console.error("User has not added link");
         sendResponse({ error: "You have not added this link" });
         return;
     }

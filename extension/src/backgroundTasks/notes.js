@@ -30,18 +30,23 @@ export const getNotesUserList = async (email) => {
 
 // Gets all notes from a specific profile
 export const getNotesProfileList = async (sendResponse) => {
-    const linkedinProfile = await getLinkedInProfile()
+    const linkedinProfile = await getLinkedInProfile();
 
     if (!linkedinProfile) {
-        sendResponse({error: "Something went wrong"});
+        sendResponse({ error: "Something went wrong" });
         return;
     }
 
-    const collectionRef = collection(db, "profiles", linkedinProfile.docs[0].id, "notes");
+    const collectionRef = collection(
+        db,
+        "profiles",
+        linkedinProfile.docs[0].id,
+        "notes",
+    );
     const querySnapshot = await getDocs(collectionRef);
     const notes = [];
     querySnapshot.forEach((doc) => notes.push(doc.data()));
-    sendResponse({success: true, notes})
+    sendResponse({ success: true, notes });
 };
 
 export const setNote = async (profile) => {

@@ -1,4 +1,5 @@
 import { mainRenderer, mainUnRenderer } from "./mainRenderer";
+import { getLoggedInUser } from "../backgroundTasks/utils";
 
 const style = document.createElement("style");
 style.innerHTML = `
@@ -52,18 +53,23 @@ document.head.appendChild(style);
 
 // in case we start on a profile page
 if (window.location.href.startsWith("https://www.linkedin.com/in/")) {
-    chrome.storage.local.get("user", (data) => {
-        if (!data.user) return;
+    async function renderPage() {
+        const user = await getLoggedInUser();
+        if (!user) return;
+        mainUnRenderer();
         mainRenderer();
-    });
+    }
+    renderPage();
 }
 
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    chrome.storage.local.get("user", (data) => {
-        if (!data.user) return;
+chrome.runtime.onMessage.addListener(
+    async function (request, sender, sendResponse) {
+        console.log("event listener");
+        const user = await getLoggedInUser();
+        if (!user) return;
 
         mainUnRenderer();
         mainRenderer();
         sendResponse({});
-    });
-});
+    },
+);

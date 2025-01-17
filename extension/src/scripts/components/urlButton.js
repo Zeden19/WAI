@@ -1,3 +1,6 @@
+// there is not "removeUrlButton()" function because the URL button is always
+// supposed to be present. In the future, we could add one when the user
+// logs out
 import { hideSpinner, showSpinner } from "./spinner";
 import { showToast } from "./toast";
 import { addShareButton, removeShareButton } from "./shareButton";
@@ -12,7 +15,7 @@ export const addUrlButton = () => {
     // from testing, page loading is inconsistent, either item 3 or item 4 is the correct element
     let consistentElement = document.getElementsByClassName("ph5 pb5");
     let buttonList;
-    if (consistentElement) {
+    if (consistentElement.length !== 0) {
         // this occurs if there is a "connect with people you know" bubble
         buttonList =
             consistentElement[0]?.children.item(3).tagName !== "A"

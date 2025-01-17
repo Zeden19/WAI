@@ -33,5 +33,5 @@ export function mainRenderer() {
         }
 
         setUrlButtonAction(action, message);
-    }, 1500);
+    }, 1000);
 }
