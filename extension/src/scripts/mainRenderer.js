@@ -14,7 +14,7 @@ export function mainUnRenderer() {
 // Used to Render the UI
 export function mainRenderer() {
     setTimeout(async () => {
-        let [button] = addUrlButton();
+        let button = await addUrlButton();
         const result = await chrome.runtime.sendMessage({
             message: "hasAddedLink",
             url: window.location.href,

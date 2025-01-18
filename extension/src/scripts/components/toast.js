@@ -1,4 +1,3 @@
-
 export async function showToast(message, type = "default") {
     // Create toast element
     const toast = document.createElement("div");

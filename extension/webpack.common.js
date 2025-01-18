@@ -17,7 +17,6 @@ module.exports = {
         "scripts/components/notes": "./src/scripts/components/notes.js",
 
         // Minor Components
-        "scripts/components/spinner": "./src/scripts/components/spinner.js",
         "scripts/components/toast": "./src/scripts/components/toast.js",
 
         // Background Tasks

@@ -12,17 +12,17 @@
 }
 
 .waiButton:hover {
-    background-color: rgb(55 143 233 / .1);
+    background-color: rgb(55 143 233 / 0.1);
     box-shadow: inset 0 0 0 2px #004182;
     color: white;
 }
 
 .waiButton:active {
-    background-color: hsla(0, 0%, 100%, 0.7)
+    background-color: hsla(0, 0%, 100%, 0.7);
 }
 
 .waiButton:disabled {
-    background-color: #CCC;
+    background-color: #ccc;
     color: gray;
     box-shadow: none;
     border: #999 1px solid;
@@ -130,7 +130,7 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: #FFF;
+    background-color: #fff;
     color: #000;
     font-weight: bold;
     padding: 10px 20px;
@@ -139,5 +139,25 @@
     z-index: 1000;
     opacity: 0; /* Start hidden */
     transform: translateX(100%); /* Start from the right side */
-    transition: opacity 0.3s ease, transform 0.3s ease;
-  }
+    transition: opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+/*URL BUTTONS STYLES*/
+#spinner {
+    display: none;
+}
+
+.spinner {
+    transform-origin: center;
+    animation: spin 1s cubic-bezier(0.36, 0.6, 0.31, 1) infinite;
+}
+
+@keyframes spin {
+    50% {
+        transform: rotate(180deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
