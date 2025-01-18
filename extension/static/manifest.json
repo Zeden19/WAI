@@ -24,11 +24,11 @@
     "web_accessible_resources": [
         {
             "resources": [
-                "components/styles.css",
                 "components/notes.html",
                 "components/share.html",
+                "components/url.html",
                 "components/toast.html",
-                "components/url.html"
+                "components/global.css"
             ],
             "matches": ["https://www.linkedin.com/*"]
         }

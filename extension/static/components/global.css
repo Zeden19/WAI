@@ -1,0 +1,30 @@
+/*GLOBAL STYLES*/
+.waiButton {
+    border: 1px solid rgb(10, 102, 194);
+    height: 3.2rem;
+    border-radius: 1.6rem;
+    color: rgb(10, 102, 194);
+    font-weight: bold;
+    padding: 6px 16px;
+    margin-right: 8px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.waiButton:hover {
+    background-color: rgb(55 143 233 / 0.1);
+    box-shadow: inset 0 0 0 2px #004182;
+    color: white;
+}
+
+.waiButton:active {
+    background-color: hsla(0, 0%, 100%, 0.7);
+}
+
+.waiButton:disabled {
+    background-color: #ccc;
+    color: gray;
+    box-shadow: none;
+    border: #999 1px solid;
+    cursor: not-allowed;
+}

@@ -32,7 +32,7 @@ export const addUrlButton = async () => {
         button = await getElementFromHTML("url.html", "urlButton");
         button.classList.add("waiButton");
         spinner = button.querySelector("#spinner");
-        text = button.querySelector("#urlButtonAction")
+        text = button.querySelector("#urlButtonAction");
         buttonList.append(button);
     }
     // linkedin page gets messed up when we add more buttons, so make sure it can wrap

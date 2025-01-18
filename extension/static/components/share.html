@@ -1,4 +1,21 @@
 <div id="shareContainer">
-    <button id="shareButton" class="waiButton">Share Link</button>
-    <div id="shareListContainer"></div>
+  <button id="shareButton" class="waiButton">Share Link</button>
+  <div id="shareListContainer"></div>
 </div>
+
+<style>
+  #shareContainer {
+    position: relative;
+  }
+
+  #shareListContainer {
+    position: absolute;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    border: 1px solid black;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+</style>
