@@ -1,7 +1,8 @@
-export function showToast(message, type = "default") {
+
+export async function showToast(message, type = "default") {
     // Create toast element
     const toast = document.createElement("div");
-    toast.className = "toast";
+    toast.id = "toast";
     toast.textContent = message;
     // Append the toast to the body
     document.body.appendChild(toast);

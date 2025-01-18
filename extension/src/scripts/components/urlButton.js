@@ -30,7 +30,7 @@ export const addUrlButton = () => {
     if (!button) {
         button = document.createElement("button");
         button.id = "urlButton";
-        button.classList.add("waiFinanceButton");
+        button.classList.add("waiButton");
 
         spinner = document.createElement("span");
         spinner.id = "spinner";
@@ -94,7 +94,7 @@ export const setUrlButtonAction = (action, message) => {
                 action = "Remove";
                 message = "linkedinRemove";
 
-                if (!document.getElementById("shareButton")) {
+                if (!document.getElementById("waiButton")) {
                     addShareButton(button);
                     addNotesUI();
                 }

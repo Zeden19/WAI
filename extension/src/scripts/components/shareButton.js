@@ -1,26 +1,19 @@
 import { showToast } from "./toast";
+import getElementFromHTML from "./getElementFromHTML";
 
-let emailList = null;
-let showShareList = false;
 let button = null;
 let container = null;
-let shareContainer = null;
+let shareListContainer = null;
+let showShareList = false;
+let emailList = null;
 
 // Main Renderer Function
-export function addShareButton(urlButton) {
+export async function addShareButton(urlButton) {
     if (!container) {
-        container = document.createElement("div");
-        container.id = "shareButtonContainer";
-        container.style.position = "relative";
+        container = await getElementFromHTML("share.html", "shareContainer");
+        button = container.querySelector("#shareButton");
+        shareListContainer = container.querySelector("#shareListContainer");
         urlButton.parentElement.appendChild(container);
-    }
-
-    if (!button) {
-        button = document.createElement("button");
-        button.id = "shareButton";
-        button.classList.add("waiFinanceButton");
-        button.innerText = "Share Link";
-        container.appendChild(button);
     }
 
     if (!emailList) {
@@ -33,35 +26,26 @@ export function addShareButton(urlButton) {
     }
 
     button.onclick = () => {
+        console.log(!showShareList);
         !showShareList ? addShareList() : removeShareList();
         showShareList = !showShareList;
     };
 }
 
 export function removeShareButton() {
-    button?.remove();
-    removeShareList();
+    container?.remove();
+    container = null;
     button = null;
+    shareListContainer = null;
+    showShareList = false;
+    emailList = null;
 }
 
 function addShareList() {
-    if (!shareContainer) {
-        shareContainer = document.createElement("div");
-        shareContainer.id = "shareListContainer";
-        shareContainer.style.position = "absolute";
-        shareContainer.style.backgroundColor = "white";
-        shareContainer.style.display = "flex";
-        shareContainer.style.flexDirection = "column";
-        shareContainer.style.zIndex = "100";
-        shareContainer.style.border = "1px solid black";
-        shareContainer.style.borderRadius = "10px";
-        shareContainer.style.overflow = "hidden";
-    }
-
     if (emailList.length === 0) {
         const div = document.createElement("div");
         div.innerText = "No emails to share to";
-        shareContainer.appendChild(div);
+        shareListContainer.appendChild(div);
     } else {
         emailList.map((email, index) => {
             const div = document.createElement("div");
@@ -95,24 +79,26 @@ function addShareList() {
                         "success",
                     );
                 email.hasAdded = !email.hasAdded;
+                showShareList = false;
                 removeShareList();
             };
-            shareContainer.appendChild(div);
+            shareListContainer.appendChild(div);
         });
     }
 
-    container.appendChild(shareContainer);
+    container.appendChild(shareListContainer);
 }
 
 function removeShareList() {
-    shareContainer?.remove();
-    shareContainer = null;
+    if (shareListContainer) {
+        shareListContainer.innerHTML = "";
+    }
 }
 
 function handleClick(event) {
     if (
         showShareList &&
-        !shareContainer?.contains(event.target) &&
+        !shareListContainer?.contains(event.target) &&
         !button?.contains(event.target)
     ) {
         removeShareList();

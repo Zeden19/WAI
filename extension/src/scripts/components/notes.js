@@ -1,5 +1,5 @@
 import { showToast } from "./toast";
-import grabComponentFromHTML from "./grabComponentFromHTML";
+import getElementFromHTML from "./getElementFromHTML";
 
 const NOTES_HTML_FILE = "notes.html";
 
@@ -66,7 +66,7 @@ export const addNotesUI = async () => {
 
     // Posting Area
     postNoteUI = document.getElementById("postNoteUI");
-    postNoteTitle = document.getElementById("postNoteUI");
+    postNoteTitle = document.getElementById("postNoteTitle");
     postNoteBody = document.getElementById("postNoteBody");
     postNoteButton = document.getElementById("postNoteButton");
     postNotePreviousButton = document.getElementById("notesPreviousButton");
@@ -78,9 +78,9 @@ export const addNotesUI = async () => {
 
     // Renders and creates the text area for notes
     if (!notesUI) {
-        notesUI = await grabComponentFromHTML(NOTES_HTML_FILE, "notesUI");
+        notesUI = await getElementFromHTML(NOTES_HTML_FILE, "notesUI");
         const parentUI = document.querySelector(".ph5");
-        parentUI.appendChild(notesUI.cloneNode(true));
+        parentUI.appendChild(notesUI);
     }
 
     postNoteUI = notesUI.querySelector("#postNoteUI");
@@ -113,5 +113,16 @@ export const addNotesUI = async () => {
 export const removeNotesUI = () => {
     if (notesUI) {
         notesUI.innerHTML = "";
+        notesUI.remove();
+        notesUI = null;
+        header = null;
+        postNoteUI = null;
+        postNoteTitle = null;
+        postNoteBody = null;
+        postNoteButton = null;
+        postNotePreviousButton = null;
+        allNoteUI = null;
+        allNoteScrollArea = null;
+        allNotesButton = null;
     }
 };

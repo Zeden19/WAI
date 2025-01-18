@@ -23,8 +23,8 @@
     ],
     "web_accessible_resources": [
         {
-            "resources": ["components/notes.html"],
-            "matches": ["<all_urls>"]
+            "resources": ["components/styles.css","components/notes.html", "components/share.html", "components/toast.html"],
+            "matches": ["https://www.linkedin.com/*"]
         }
     ]
 }
