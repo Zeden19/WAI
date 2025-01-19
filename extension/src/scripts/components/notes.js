@@ -4,17 +4,15 @@ import { newNote } from "../../backgroundTasks/notes";
 
 const NOTES_HTML_FILE = "notes.html";
 
-// to maintain css element between calls/renders
 let notesUI = null;
 
 let postNoteUI = null;
+let postNoteText = null;
 let postNoteTextArea = null;
 let saveNoteButton = null;
 
-let seeAllNotesButton = null;
-let allNoteUI = null;
+let allNotesUI = null;
 let allNoteScrollArea = null;
-let addNotesButton = null;
 let allNotes = [];
 
 export const addNotesUI = async () => {
@@ -24,12 +22,10 @@ export const addNotesUI = async () => {
     postNoteUI = document.getElementById("postNoteUI");
     postNoteTextArea = document.getElementById("postNoteTextArea");
     saveNoteButton = document.getElementById("saveNoteButton");
-    seeAllNotesButton = document.getElementById("seeAllNotesButton");
 
     // Previous Notes
-    allNoteUI = document.getElementById("allNotesUI");
+    allNotesUI = document.getElementById("allNotesUI");
     allNoteScrollArea = document.getElementById("allNoteScrollArea");
-    addNotesButton = document.getElementById("addNotes");
 
     // Renders and creates the text area for notes
     if (!notesUI) {
@@ -40,25 +36,15 @@ export const addNotesUI = async () => {
 
     postNoteUI = notesUI.querySelector("#postNoteUI");
     postNoteTextArea = postNoteUI.querySelector("#postNoteTextArea");
+    postNoteText = postNoteUI.querySelector("#postNoteText");
     saveNoteButton = postNoteUI.querySelector("#saveNoteButton");
-    seeAllNotesButton = postNoteUI.querySelector("#seeAllNotesButton");
 
-    allNoteUI = notesUI.querySelector("#allNoteUI");
+    allNotesUI = notesUI.querySelector("#allNotesUI");
     allNoteScrollArea = notesUI.querySelector("#allNoteScrollArea");
-    addNotesButton = notesUI.querySelector("#addNotes");
     await addAllNotes();
 
     saveNoteButton.addEventListener("click", async () => {
         await postNewNote();
-    });
-    seeAllNotesButton.addEventListener("click", () => {
-        postNoteUI.style.display = "none";
-        allNoteUI.style.display = "flex";
-    });
-
-    addNotesButton.addEventListener("click", () => {
-        allNoteUI.style.display = "none";
-        postNoteUI.style.display = "flex";
     });
 };
 
@@ -67,12 +53,14 @@ export const addNotesUI = async () => {
 const postNewNote = async () => {
     saveNoteButton.disabled = true;
     postNoteTextArea.disabled = true;
+    postNoteText.disabled = true;
     saveNoteButton.innerText = "Saving...";
     saveNoteButton.style.backgroundColor = "rgb(80, 144, 207)";
 
     const response = await chrome.runtime.sendMessage({
         message: "newNote",
-        noteText: postNoteTextArea.value,
+        noteTitle: postNoteText.value,
+        noteDescription: postNoteTextArea.value
     });
 
     if (response?.error) {
@@ -81,9 +69,10 @@ const postNewNote = async () => {
         showToast("Note created successfully", "success");
     }
 
-    seeAllNotesButton.disabled = false;
     postNoteTextArea.disabled = false;
+    postNoteText.disabled = false;
     postNoteTextArea.value = "";
+    postNoteText.value = ""
     saveNoteButton.innerText = "Save";
     saveNoteButton.style.backgroundColor = "rgb(10, 102, 194)";
 
@@ -104,12 +93,23 @@ const addAllNotes = async () => {
     });
 };
 
+// Couple things we need for the future:
+// as this list can get pretty long, make each title an accordion for the button
+// add ability to edit & delete notes
 const renderNote = (note) => {
     const noteUI = document.createElement("div");
     noteUI.className = "note";
-    const noteText = document.createElement("span");
-    noteText.innerText = note.text;
-    noteUI.appendChild(noteText);
+
+    const noteTitle = document.createElement("span");
+    noteTitle.className = "noteTitle";
+    noteTitle.innerText = note.title;
+
+    const noteDescription = document.createElement("h5");
+    noteDescription.className = "noteDescription";
+    noteDescription.innerText = note.description;
+
+    noteUI.appendChild(noteTitle);
+    noteUI.appendChild(noteDescription);
     allNoteScrollArea.appendChild(noteUI);
 };
 
@@ -121,10 +121,8 @@ export const removeNotesUI = () => {
         postNoteUI = null;
         postNoteTextArea = null;
         saveNoteButton = null;
-        seeAllNotesButton = null;
-        allNoteUI = null;
+        allNotesUI = null;
         allNoteScrollArea = null;
-        addNotesButton = null;
         allNotes = [];
     }
 };

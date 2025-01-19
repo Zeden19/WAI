@@ -57,12 +57,13 @@ export const setNote = async (profile) => {
     // we have to add a doc to the new collection
     await addDoc(notesSubCollection, {
         lastUpdated: new Date(),
-        text: "Your new note",
+        title: "Your new Note",
+        text: "Note Description",
         created: new Date(),
     });
 };
 
-export const newNote = async (noteText, sendResponse) => {
+export const newNote = async (noteTitle, noteDescription , sendResponse) => {
     // getting all info
     const profile = await getLinkedInProfile();
 
@@ -76,7 +77,8 @@ export const newNote = async (noteText, sendResponse) => {
     const notesSubCollection = collection(db, "profiles", profileId, "notes");
     const newNoteRef = await addDoc(notesSubCollection, {
         lastUpdated: new Date(),
-        text: noteText,
+        title: noteTitle,
+        description: noteDescription,
         created: new Date(),
     });
 

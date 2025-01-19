@@ -144,7 +144,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             setNote(request.noteContent, sendResponse);
             break;
         case "newNote":
-            newNote(request.noteText, sendResponse);
+            newNote(request.noteTitle, request.noteDescription, sendResponse);
             break;
         case "getNotesList":
 
