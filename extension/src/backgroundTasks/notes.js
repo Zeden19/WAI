@@ -3,6 +3,7 @@ import {
     collection,
     deleteDoc,
     doc,
+    getDoc,
     getDocs,
     query,
     where,
@@ -55,9 +56,9 @@ export const setNote = async (profile) => {
 
     // we have to add a doc to the new collection
     await addDoc(notesSubCollection, {
-        lastUpdated: null,
-        text: null,
-        created: null,
+        lastUpdated: new Date(),
+        text: "Your new note",
+        created: new Date(),
     });
 };
 
@@ -65,21 +66,24 @@ export const newNote = async (noteText, sendResponse) => {
     // getting all info
     const profile = await getLinkedInProfile();
 
-    if (!user || !url || !profile) {
-        console.error(`user: ${user}, url: ${url}, profile: ${profile}`);
+    if (!profile) {
+        console.error(`profile: ${profile} not defined`);
         sendResponse({ error: "Something went wrong. Please try again." });
     }
     const profileId = profile.docs[0].id;
 
     // adding to sub collection
     const notesSubCollection = collection(db, "profiles", profileId, "notes");
-    const newNote = await addDoc(notesSubCollection, {
+    const newNoteRef = await addDoc(notesSubCollection, {
         lastUpdated: new Date(),
         text: noteText,
         created: new Date(),
     });
 
-    sendResponse({ success: true, id: newNote.id });
+    const newNoteDoc = await getDoc(newNoteRef);
+    const newNote = newNoteDoc.data();
+
+    sendResponse({ success: true, newNote });
 };
 
 export const updateNotes = () => {};
