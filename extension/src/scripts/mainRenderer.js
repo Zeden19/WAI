@@ -1,5 +1,5 @@
 import { addShareButton, removeShareButton } from "./components/shareButton";
-import { addNotesUI, removeNotesUI } from "./components/notes";
+import { renderNotesUI, removeNotesUI } from "./components/notes";
 import { addUrlButton, setUrlButtonAction } from "./components/urlButton";
 
 let action = "Add";
@@ -26,7 +26,7 @@ export function mainRenderer() {
 
         if (profileExists) {
             addShareButton(button);
-            addNotesUI();
+            renderNotesUI();
         } else {
             removeShareButton();
             removeNotesUI();

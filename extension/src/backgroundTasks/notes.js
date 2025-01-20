@@ -6,6 +6,7 @@ import {
     getDoc,
     getDocs,
     query,
+    updateDoc,
     where,
 } from "firebase/firestore";
 import db from "../firebase";
@@ -63,7 +64,7 @@ export const setNote = async (profile) => {
     });
 };
 
-export const newNote = async (noteTitle, noteDescription , sendResponse) => {
+export const newNote = async (noteTitle, noteDescription, sendResponse) => {
     // getting all info
     const profile = await getLinkedInProfile();
 
@@ -88,14 +89,42 @@ export const newNote = async (noteTitle, noteDescription , sendResponse) => {
     sendResponse({ success: true, newNote });
 };
 
-export const updateNotes = () => {};
-
-export const removeNote = async (noteId, sendResponse) => {
+export const updateNote = async (id, title, description, sendResponse) => {
     const profile = await getLinkedInProfile();
 
     if (!profile) {
         console.error(`profile: ${profile} not defined`);
         sendResponse({ error: "Something went wrong. Please try again." });
+    }
+    const profileId = profile.docs[0].id;
+
+    const noteRef = doc(db, "profiles", profileId, "notes", id);
+    try {
+        await updateDoc(noteRef, {
+            lastUpdated: new Date(),
+            title,
+            description,
+        });
+        sendResponse({ success: true });
+    } catch (e) {
+        console.error(e);
+        sendResponse({ error: "Something went wrong." });
+    }
+};
+
+export const deleteNote = async (noteId, sendResponse) => {
+    const profile = await getLinkedInProfile();
+
+    if (!profile) {
+        console.error(`profile: ${profile} not defined`);
+        sendResponse({ error: "Something went wrong. Please try again." });
+        return;
+    }
+
+    if (!noteId) {
+        console.error("note id not defined");
+        sendResponse({ error: "Something went wrong. Please try again." });
+        return;
     }
     const profileId = profile.docs[0].id;
 

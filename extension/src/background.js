@@ -12,8 +12,9 @@ import {
 import {
     getNotesProfileList,
     setNote,
-    removeNote,
+    deleteNote,
     newNote,
+    updateNote,
 } from "./backgroundTasks/notes";
 import db from "./firebase";
 
@@ -137,8 +138,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         case "getNoteList":
             getNotesProfileList(sendResponse);
             break;
-        case "removeNote":
-            removeNote(request.noteID, sendResponse);
+        case "deleteNote":
+            deleteNote(request.noteId, sendResponse);
             break;
         case "setNote":
             setNote(request.noteContent, sendResponse);
@@ -146,7 +147,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         case "newNote":
             newNote(request.noteTitle, request.noteDescription, sendResponse);
             break;
-        case "getNotesList":
+        case "updateNote":
+            updateNote(
+                request.noteId,
+                request.noteTitle,
+                request.noteDescription,
+                sendResponse,
+            );
 
         default:
             // Handle unknown message type if necessary

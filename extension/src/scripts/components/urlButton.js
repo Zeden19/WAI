@@ -3,7 +3,7 @@
 // logs out
 import { showToast } from "./toast";
 import { addShareButton, removeShareButton } from "./shareButton";
-import { addNotesUI, removeNotesUI } from "./notes";
+import { renderNotesUI, removeNotesUI } from "./notes";
 import getElementFromHTML from "./getElementFromHTML";
 
 let button;
@@ -75,7 +75,7 @@ export const setUrlButtonAction = (action, message) => {
 
                 if (!document.getElementById("waiButton")) {
                     addShareButton(button);
-                    addNotesUI();
+                    renderNotesUI();
                 }
             } else {
                 action = "Add";

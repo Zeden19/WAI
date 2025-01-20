@@ -15,7 +15,7 @@ let allNotesUI = null;
 let allNoteScrollArea = null;
 let allNotes = [];
 
-export const addNotesUI = async () => {
+export const renderNotesUI = async () => {
     notesUI = document.getElementById("notesUI"); // parent element for the entire notesUI
 
     // Posting Area
@@ -41,7 +41,7 @@ export const addNotesUI = async () => {
 
     allNotesUI = notesUI.querySelector("#allNotesUI");
     allNoteScrollArea = notesUI.querySelector("#allNoteScrollArea");
-    await addAllNotes();
+    await renderAllNotes();
 
     saveNoteButton.addEventListener("click", async () => {
         await postNewNote();
@@ -68,6 +68,7 @@ const postNewNote = async () => {
         showToast("Note created successfully", "success");
     }
 
+    saveNoteButton.disabled = false;
     postNoteTextArea.disabled = false;
     postNoteText.disabled = false;
     postNoteTextArea.value = "";
@@ -79,7 +80,7 @@ const postNewNote = async () => {
     renderNote(response.newNote);
 };
 
-const addAllNotes = async () => {
+const renderAllNotes = async () => {
     if (allNotes.length === 0) {
         const { notes } = await chrome.runtime.sendMessage({
             message: "getNoteList",
@@ -103,10 +104,9 @@ const renderNote = async (note) => {
     noteTitle.innerText = note.title;
 
     const noteDescription = noteUI.querySelector("#noteDescription");
-    noteDescription.querySelector("#noteDescriptionText").innerText =
-        note.description;
+    noteDescription.innerText = note.description;
 
-    const noteFooter = noteDescription.querySelector("#noteFooter");
+    const noteFooter = noteUI.querySelector("#noteFooter");
     noteFooter.innerText = note.description.length;
 
     const deleteButton = document.createElement("button");
@@ -114,10 +114,66 @@ const renderNote = async (note) => {
     deleteIcon.src = chrome.runtime.getURL("assets/deleteIcon.png");
     deleteButton.appendChild(deleteIcon);
 
+    // Both (or 3) event clickers is quite a lot for a "render" function. Consider separating it into 3 functions
+    // this whole thing probbably needs some refactoring!
+    deleteButton.onclick = async () => {
+        deleteButton.disabled = true;
+        const response = await chrome.runtime.sendMessage({
+            message: "deleteNote",
+            noteId: note.id,
+        });
+        if (response?.error) {
+            await showToast(response.error, "error");
+        } else {
+            // Todo: add dialog for confirmation
+            noteUI.remove();
+            showToast("Note successfully deleted", "success");
+        }
+        deleteButton.disabled = false;
+    };
+
     const editButton = document.createElement("button");
     const editIcon = document.createElement("img");
     editIcon.src = chrome.runtime.getURL("assets/editIcon.png");
     editButton.appendChild(editIcon);
+
+    const saveChangesButton = noteUI.querySelector("#saveChangesButton");
+    let oldVals;
+    editButton.onclick = async () => {
+        oldVals = {
+            title: noteTitle.value,
+            description: noteDescription.value,
+        };
+        saveChangesButton.hidden = false;
+        editButton.disabled = true;
+        noteUI.style.gap = "12px";
+        noteTitle.style.borderBottom = "2px solid black";
+        noteTitle.readOnly = false;
+        noteDescription.readOnly = false;
+    };
+
+    saveChangesButton.onclick = async () => {
+        const response = await chrome.runtime.sendMessage({
+            message: "updateNote",
+            noteId: note.id,
+            noteTitle: noteTitle.value,
+            noteDescription: noteDescription.value,
+        });
+        if (response?.error) {
+            noteTitle.value = oldVals.title;
+            noteDescription.value = oldVals.description;
+            showToast(response.error, "error");
+        } else {
+            showToast("Successfully updated note", "success");
+        }
+
+        saveChangesButton.hidden = true;
+        editButton.disabled = false;
+        noteUI.style.gap = "0";
+        noteTitle.style.borderBottom = "0";
+        noteTitle.readOnly = true;
+        noteDescription.readOnly = true;
+    };
 
     noteFooter.append(editButton, deleteButton);
     allNoteScrollArea.appendChild(noteUI);
