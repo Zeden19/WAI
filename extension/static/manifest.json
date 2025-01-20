@@ -28,7 +28,9 @@
                 "components/share.html",
                 "components/url.html",
                 "components/toast.html",
-                "components/global.css"
+                "components/global.css",
+                "assets/deleteIcon.png",
+                "assets/editIcon.png"
             ],
             "matches": ["https://www.linkedin.com/*"]
         }

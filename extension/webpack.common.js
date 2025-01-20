@@ -20,10 +20,7 @@ module.exports = {
         "scripts/components/toast": "./src/scripts/components/toast.js",
 
         // Background Tasks
-        "backgroundTasks/notesF": "./src/backgroundTasks/notes.js",
-        "backgroundTasks/profileFB": "./src/backgroundTasks/profiles.js",
-        "backgroundTasks/shareUsersFB": "./src/backgroundTasks/shareUsers.js",
-        "backgroundTasks/notesFB": "./src/backgroundTasks/notes.js",
+        "backgroundTasks/notes": "./src/backgroundTasks/notes.js",
         "backgroundTasks/profile": "./src/backgroundTasks/profiles.js",
         "backgroundTasks/shareUsers": "./src/backgroundTasks/shareUsers.js",
         "backgroundTasks/utils": "./src/backgroundTasks/utils.js",

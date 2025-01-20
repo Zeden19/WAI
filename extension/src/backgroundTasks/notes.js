@@ -46,7 +46,7 @@ export const getNotesProfileList = async (sendResponse) => {
     );
     const querySnapshot = await getDocs(collectionRef);
     const notes = [];
-    querySnapshot.forEach((doc) => notes.push(doc.data()));
+    querySnapshot.forEach((doc) => notes.push({ ...doc.data(), id: doc.id }));
     sendResponse({ success: true, notes });
 };
 
@@ -58,7 +58,7 @@ export const setNote = async (profile) => {
     await addDoc(notesSubCollection, {
         lastUpdated: new Date(),
         title: "Your new Note",
-        text: "Note Description",
+        description: "Note Description",
         created: new Date(),
     });
 };
@@ -83,7 +83,7 @@ export const newNote = async (noteTitle, noteDescription , sendResponse) => {
     });
 
     const newNoteDoc = await getDoc(newNoteRef);
-    const newNote = newNoteDoc.data();
+    const newNote = { ...newNoteDoc.data(), id: newNoteDoc.id };
 
     sendResponse({ success: true, newNote });
 };

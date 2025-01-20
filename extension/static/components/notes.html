@@ -18,6 +18,15 @@
     </div>
 </div>
 
+<div id="note">
+    <h5 id="noteTitle"></h5>
+    <div id="noteDescription">
+        <span id="noteDescriptionText"></span>
+        <span id="noteFooter">
+        </span>
+    </div>
+</div>
+
 <style>
     #notesUI {
         display: flex;
@@ -98,14 +107,14 @@
         overflow-y: auto;
     }
 
-    .note {
+    #note {
         display: flex;
         flex-direction: column;
         width: 100%;
         margin-bottom: 8px;
     }
 
-    .noteTitle {
+    #noteTitle {
         padding: 5px;
         border: black solid 2px;
         border-bottom: 0;
@@ -116,12 +125,33 @@
     }
 
 
-    .noteDescription {
+    #noteDescription {
         padding: 5px;
         border: black solid 2px;
         border-radius: 0 10px 10px 10px;
         width: 100%;
         height: calc(3.6rem * 2);
         overflow-y: scroll;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between
+    }
+
+    #noteFooter {
+        font-size: smaller;
+        color: #999999;
+        font-style: italic;
+        margin-left: auto;
+        display: flex;
+        gap: 3px;
+    }
+
+    #noteFooter > button:hover {
+        background-color: #ccc;
+    }
+
+    #noteFooter > button > img {
+        width: 2rem;
     }
 </style>

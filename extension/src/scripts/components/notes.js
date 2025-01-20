@@ -48,7 +48,6 @@ export const addNotesUI = async () => {
     });
 };
 
-
 // creating new note
 const postNewNote = async () => {
     saveNoteButton.disabled = true;
@@ -60,7 +59,7 @@ const postNewNote = async () => {
     const response = await chrome.runtime.sendMessage({
         message: "newNote",
         noteTitle: postNoteText.value,
-        noteDescription: postNoteTextArea.value
+        noteDescription: postNoteTextArea.value,
     });
 
     if (response?.error) {
@@ -72,7 +71,7 @@ const postNewNote = async () => {
     postNoteTextArea.disabled = false;
     postNoteText.disabled = false;
     postNoteTextArea.value = "";
-    postNoteText.value = ""
+    postNoteText.value = "";
     saveNoteButton.innerText = "Save";
     saveNoteButton.style.backgroundColor = "rgb(10, 102, 194)";
 
@@ -96,20 +95,31 @@ const addAllNotes = async () => {
 // Couple things we need for the future:
 // as this list can get pretty long, make each title an accordion for the button
 // add ability to edit & delete notes
-const renderNote = (note) => {
-    const noteUI = document.createElement("div");
-    noteUI.className = "note";
+const renderNote = async (note) => {
+    const noteUI = await getElementFromHTML(NOTES_HTML_FILE, "note");
+    noteUI.id = note.id;
 
-    const noteTitle = document.createElement("span");
-    noteTitle.className = "noteTitle";
+    const noteTitle = noteUI.querySelector("#noteTitle");
     noteTitle.innerText = note.title;
 
-    const noteDescription = document.createElement("h5");
-    noteDescription.className = "noteDescription";
-    noteDescription.innerText = note.description;
+    const noteDescription = noteUI.querySelector("#noteDescription");
+    noteDescription.querySelector("#noteDescriptionText").innerText =
+        note.description;
 
-    noteUI.appendChild(noteTitle);
-    noteUI.appendChild(noteDescription);
+    const noteFooter = noteDescription.querySelector("#noteFooter");
+    noteFooter.innerText = note.description.length;
+
+    const deleteButton = document.createElement("button");
+    const deleteIcon = document.createElement("img");
+    deleteIcon.src = chrome.runtime.getURL("assets/deleteIcon.png");
+    deleteButton.appendChild(deleteIcon);
+
+    const editButton = document.createElement("button");
+    const editIcon = document.createElement("img");
+    editIcon.src = chrome.runtime.getURL("assets/editIcon.png");
+    editButton.appendChild(editIcon);
+
+    noteFooter.append(editButton, deleteButton);
     allNoteScrollArea.appendChild(noteUI);
 };
 
