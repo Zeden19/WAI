@@ -1,8 +1,8 @@
-import {useState} from 'react'
 import './App.css'
 import {signInWithPopup, GoogleAuthProvider, getAuth} from 'firebase/auth';
 import {initializeApp} from 'firebase/app';
 import firebaseConfig from './firebaseConfig.js'
+import { Button } from "@/components/ui/button.tsx";
 
 function App() {
   const app = initializeApp(firebaseConfig);
@@ -33,7 +33,7 @@ function App() {
 
   return (
     <>
-      huihkj
+      <Button></Button>
     </>
   )
 }
