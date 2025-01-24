@@ -1,15 +1,15 @@
 import "./App.css";
 import FirebaseOffscreen from "@/components/FirebaseOffscreen.jsx";
-import { Button } from "@/components/ui/button.jsx";
 import Nav from "@/components/Nav.jsx";
 import { ThemeProvider } from "@/components/ui/theme-provider.jsx";
+import { Toaster } from "sonner";
 
 function App() {
     return (
       <ThemeProvider>
           <Nav/>
           <FirebaseOffscreen />
-          <Button></Button>
+          <Toaster/>
       </ThemeProvider>
     );
 }
