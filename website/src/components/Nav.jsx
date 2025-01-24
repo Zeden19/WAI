@@ -34,8 +34,8 @@ function Nav() {
     return (<nav className={"flex justify-between items-center bg-gray-900 border-b-2 bg-secondary py-1 px-7"}>
         <div>Wai Finance Logo</div>
         <div className={"flex gap-9"}>
-            <a>Your Profiles</a>
-            <a>Shared Profiles</a>
+            <a className={"cursor-pointer"}>Your Profiles</a>
+            <a className={"cursor-pointer"}>Shared Profiles</a>
         </div>
         <div className={"flex gap-4 items-center"}>
             <ModeToggle />
@@ -45,7 +45,7 @@ function Nav() {
                 <DropdownMenuContent>
                     {!user ? <DropdownMenuItem onClick={signIn}>Sign in</DropdownMenuItem> :
                       <>
-                          <DropdownMenuLabel>Your account</DropdownMenuLabel>
+                          <DropdownMenuLabel>{user.displayName}</DropdownMenuLabel>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem>Profile</DropdownMenuItem>
                           <DropdownMenuItem onClick={signOut}>Sign Out</DropdownMenuItem>
