@@ -121,7 +121,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             getLinkedInProfile(sendResponse);
             break;
         case "linkedinAdd":
-            setLinkedInProfile(sendResponse);
+            setLinkedInProfile(request.image, sendResponse);
             break;
         case "linkedinRemove":
             deleteLinkedinProfile(sendResponse);

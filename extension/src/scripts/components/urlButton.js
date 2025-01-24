@@ -9,6 +9,7 @@ import getElementFromHTML from "./getElementFromHTML";
 let button;
 let spinner;
 let text;
+
 export const addUrlButton = async () => {
     button = document.getElementById("urlButton");
     spinner = document.createElement("spinner");
@@ -19,13 +20,13 @@ export const addUrlButton = async () => {
     if (consistentElement.length !== 0) {
         // this occurs if there is a "connect with people you know" bubble
         buttonList =
-            consistentElement[0]?.children.item(3).tagName !== "A"
-                ? consistentElement[0]?.children.item(3)
-                : consistentElement[0]?.children.item(4);
+          consistentElement[0]?.children.item(3).tagName !== "a"
+            ? consistentElement[0]?.children.item(3)
+            : consistentElement[0]?.children.item(4);
     } else {
         buttonList =
-            document.getElementsByClassName("ph5")[0]?.children.item(4) ??
-            document.getElementsByClassName("ph5")[0]?.children.item(3);
+          document.getElementsByClassName("ph5")[0]?.children.item(4) ??
+          document.getElementsByClassName("ph5")[0]?.children.item(3);
     }
 
     if (!button) {
@@ -43,6 +44,7 @@ export const addUrlButton = async () => {
 };
 
 export const setUrlButtonAction = (action, message) => {
+    const image = document.getElementsByClassName("pv-top-card__non-self-photo-wrapper ml0")[0].children[0].children[0].src;
     text.innerHTML = `${action} URL`;
 
     // we use onclick here instead of adding an event listener to prevent duplicate clicks
@@ -52,20 +54,20 @@ export const setUrlButtonAction = (action, message) => {
         spinner.style.display = "inline-block";
         const data = await chrome.runtime.sendMessage({
             message,
-            url: window.location.href,
+            image
         });
         spinner.style.display = "none";
         button.disabled = false;
 
         if (data.error) {
             await showToast(
-                `Could not ${action.toLowerCase()} link: ${data.error}`,
-                "error",
+              `Could not ${action.toLowerCase()} link: ${data.error}`,
+              "error"
             );
         } else {
             await showToast(
-                `Link successfully ${action.toLowerCase()}ed!`,
-                "success",
+              `Link successfully ${action.toLowerCase()}ed!`,
+              "success"
             );
 
             // Toggle action and message for next click

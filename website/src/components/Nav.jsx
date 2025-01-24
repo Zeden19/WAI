@@ -17,7 +17,7 @@ function Nav() {
     async function signIn() {
         const result = await signInWithGoogle();
         if (!result) {
-            toast.error("Could not sign in")
+            toast.error("Could not sign in");
             return;
         }
         setUser(result);
@@ -27,7 +27,7 @@ function Nav() {
     function signOut() {
         signOutFromGoogle();
         setUser(null);
-        toast.success("Successfully signed out")
+        toast.success("Successfully signed out");
     }
 
 
@@ -39,13 +39,14 @@ function Nav() {
         </div>
         <div className={"flex gap-4 items-center"}>
             <ModeToggle />
+            {user && user.displayName}
             <DropdownMenu>
                 <DropdownMenuTrigger><img className={"max-w-full h-11 flex-shrink"} alt={"Account Menu"}
                                           src={`${account}`} /></DropdownMenuTrigger>
                 <DropdownMenuContent>
                     {!user ? <DropdownMenuItem onClick={signIn}>Sign in</DropdownMenuItem> :
                       <>
-                          <DropdownMenuLabel>{user.displayName}</DropdownMenuLabel>
+                          <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem>Profile</DropdownMenuItem>
                           <DropdownMenuItem onClick={signOut}>Sign Out</DropdownMenuItem>

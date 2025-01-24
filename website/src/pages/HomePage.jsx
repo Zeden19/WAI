@@ -6,11 +6,13 @@ import {
 } from "@/lib/firebaseFunctions.js";
 import { useEffect, useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table.jsx";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar.jsx";
 
 function HomePage() {
     const user = getLoggedInUser();
     const [profiles, setProfiles] = useState(null);
     const [sharedProfiles, setSharedProfiles] = useState(null);
+    // Make these entire context variables since updates are not showing
 
     useEffect(() => {
         async function getUserProfiles() {
@@ -23,8 +25,8 @@ function HomePage() {
             setSharedProfiles(data);
         }
 
-        getUserProfiles().then(r => r);
-        getSharedProfiles().then(r => r);
+        getUserProfiles();
+        getSharedProfiles();
     }, []);
 
     return (
@@ -36,6 +38,7 @@ function HomePage() {
                       <TableRow>
                           <TableHead>Name</TableHead>
                           <TableHead>Link</TableHead>
+                          <TableHead>Photo</TableHead>
                       </TableRow>
                   </TableHeader>
 
@@ -45,8 +48,16 @@ function HomePage() {
                             <TableCell>{getNameFromLink(profile.link)}</TableCell>
                             <TableCell><a className={"underline text-blue-500"}
                                           href={profile.link}>{profile.link}</a></TableCell>
+                            <TableCell><Avatar>
+                                <AvatarImage src={profile.imageURL} />
+                                <AvatarFallback>{getNameFromLink(profile.link).slice(0, 2).toUpperCase()}</AvatarFallback>
+                            </Avatar></TableCell>
                         </TableRow>
-                      )) : <div>No Data</div>}
+                      )) : <TableRow className={"text-center"}>
+                          <TableCell colSpan={5}>
+                              <div>No Data</div>
+                          </TableCell>
+                      </TableRow>}
                   </TableBody>
               </Table>
           </div>
@@ -57,7 +68,9 @@ function HomePage() {
                       <TableRow>
                           <TableHead>Name</TableHead>
                           <TableHead>Link</TableHead>
+                          <TableHead>Photo</TableHead>
                           <TableHead>Adder</TableHead>
+                          <TableHead>Adder Photo</TableHead>
                       </TableRow>
                   </TableHeader>
 
@@ -67,10 +80,22 @@ function HomePage() {
                             <TableCell>{getNameFromLink(profile.link)}</TableCell>
                             <TableCell><a className={"underline text-blue-500"}
                                           href={profile.link}>{profile.link}</a></TableCell>
-                            <TableCell>{profile.adderEmail}</TableCell>
+                            <TableCell>
+                                <Avatar>
+                                    <AvatarImage src={profile.imageURL} />
+                                    <AvatarFallback>{getNameFromLink(profile.link).slice(0, 2).toUpperCase()}</AvatarFallback>
+                                </Avatar>
+                            </TableCell>
+                            <TableCell>{profile.adderName}</TableCell>
+                            <TableCell>
+                                <Avatar>
+                                    <AvatarImage src={profile.adderImage} />
+                                    <AvatarFallback>{profile.adderName.slice(0, 2).toUpperCase()}</AvatarFallback>
+                                </Avatar>
+                            </TableCell>
                         </TableRow>
                       )) : <TableRow className={"text-center"}>
-                          <TableCell colSpan={3}>
+                          <TableCell colSpan={5}>
                               <div>No Data</div>
                           </TableCell>
                       </TableRow>}

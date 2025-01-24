@@ -4,7 +4,4 @@ firebase firestore:delete -r profiles --project wai-finance
 # Run prettier on all files (extension only)
 npx prettier . --write
 
-# deploy firebase website
-npm run build
-firebase deploy
 

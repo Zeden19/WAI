@@ -26,7 +26,7 @@ export async function getLinkedInProfile(sendResponse) {
         return false;
     }
     const docRef = await getDoc(doc(db, "users", adderEmail));
-    const shareEmailList = docRef.data().urlsReceivedShared;
+    const shareEmailList = docRef.data().accountsSharedWith;
 
     shareEmailList.push(adderEmail);
 
@@ -50,7 +50,7 @@ export async function getLinkedInProfile(sendResponse) {
     return await getDocs(q);
 }
 
-export const setLinkedInProfile = async (sendResponse) => {
+export const setLinkedInProfile = async (imageURL, sendResponse) => {
     const user = await getLoggedInUser(sendResponse);
     const url = await getCurrentTabUrl();
     if (!user || !url) {
@@ -62,6 +62,8 @@ export const setLinkedInProfile = async (sendResponse) => {
     const profileDocResponse = await addDoc(profilesRef, {
         adderEmail: user.email,
         adderImage: user.photoURL,
+        adderName: user.displayName,
+        imageURL,
         link: url,
         sharedWith: [],
     });
