@@ -1,14 +1,17 @@
-import './App.css'
-import FirebaseOffscreen from "@/components/ui/FirebaseOffscreen.jsx";
+import "./App.css";
+import FirebaseOffscreen from "@/components/FirebaseOffscreen.jsx";
 import { Button } from "@/components/ui/button.jsx";
+import Nav from "@/components/Nav.jsx";
+import { ThemeProvider } from "@/components/ui/theme-provider.jsx";
 
 function App() {
-  return (
-    <>
-      <FirebaseOffscreen/>
-        <Button>amongoiusafa</Button>
-    </>
-  )
+    return (
+      <ThemeProvider>
+          <Nav/>
+          <FirebaseOffscreen />
+          <Button></Button>
+      </ThemeProvider>
+    );
 }
 
-export default App
+export default App;
