@@ -1,7 +1,7 @@
 import "./App.css";
 import FirebaseOffscreen from "@/components/FirebaseOffscreen.jsx";
 import Nav from "@/components/Nav.jsx";
-import { ThemeProvider } from "@/components/ui/theme-provider.jsx";
+import { ThemeProvider } from "@/components/ui/theme-provider.tsx";
 import { Toaster } from "sonner";
 import HomePage from "@/pages/HomePage.jsx";
 

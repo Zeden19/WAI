@@ -5,8 +5,8 @@ import {
     getSharedProfiles as getSharedProfilesDB
 } from "@/lib/firebaseFunctions.js";
 import { useEffect, useState } from "react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table.jsx";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar.jsx";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table.tsx";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar.tsx";
 
 function HomePage() {
     const user = getLoggedInUser();
@@ -29,6 +29,7 @@ function HomePage() {
         getSharedProfiles();
     }, []);
 
+
     return (
       <div className={"flex justify-around "}>
           <div>
@@ -46,7 +47,7 @@ function HomePage() {
                       {profiles && profiles.length !== 0 ? (profiles.map(profile =>
                         <TableRow key={"profile-" + profile.link}>
                             <TableCell>{getNameFromLink(profile.link)}</TableCell>
-                            <TableCell><a className={"underline text-blue-500"}
+                            <TableCell><a target={"_blank"} className={"underline text-blue-500"}
                                           href={profile.link}>{profile.link}</a></TableCell>
                             <TableCell><Avatar>
                                 <AvatarImage src={profile.imageURL} />
@@ -78,7 +79,7 @@ function HomePage() {
                       {sharedProfiles && sharedProfiles.length !== 0 ? (sharedProfiles.map(profile =>
                         <TableRow key={"shared-" + profile.link}>
                             <TableCell>{getNameFromLink(profile.link)}</TableCell>
-                            <TableCell><a className={"underline text-blue-500"}
+                            <TableCell><a target={"_blank"} className={"underline text-blue-500"}
                                           href={profile.link}>{profile.link}</a></TableCell>
                             <TableCell>
                                 <Avatar>
