@@ -10,6 +10,7 @@ import { getLoggedInUser, signIn as signInWithGoogle, signOut as signOutFromGoog
 import { useState } from "react";
 import { toast } from "sonner";
 import { NavLink, Outlet } from "react-router";
+import { Link } from "react-router";
 
 
 function Nav() {
@@ -57,7 +58,7 @@ function Nav() {
                             <>
                                 <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem>Profile</DropdownMenuItem>
+                                <DropdownMenuItem><Link to={`/user/${user.email}`}>User Page</Link></DropdownMenuItem>
                                 <DropdownMenuItem onClick={signOut}>Sign Out</DropdownMenuItem>
                             </>
                           }

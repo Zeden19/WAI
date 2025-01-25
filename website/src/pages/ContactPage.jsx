@@ -1,4 +1,4 @@
-function Contact() {
+function ContactPage() {
     return (
       <>
           contact Page
@@ -6,4 +6,4 @@ function Contact() {
     );
 }
 
-export default Contact;
+export default ContactPage;

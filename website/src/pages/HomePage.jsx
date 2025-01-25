@@ -7,6 +7,8 @@ import {
 import { useEffect, useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table.tsx";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar.tsx";
+import { SquareArrowOutUpRight } from "lucide-react";
+import { Link } from "react-router";
 
 function HomePage() {
     const user = getLoggedInUser();
@@ -43,10 +45,15 @@ function HomePage() {
                       </TableRow>
                   </TableHeader>
 
+                  {/*the 2 tables should be a reusable component; editing both when i want to make a change sucks*/}
                   <TableBody>
                       {profiles && profiles.length !== 0 ? (profiles.map(profile =>
                         <TableRow key={"profile-" + profile.link}>
-                            <TableCell>{getNameFromLink(profile.link)}</TableCell>
+                            <TableCell>
+                                <Link to={`profile/${profile.id}`}><SquareArrowOutUpRight
+                                  className={"inline mr-2"} />{getNameFromLink(profile.link)}
+                                </Link>
+                            </TableCell>
                             <TableCell><a target={"_blank"} className={"underline text-blue-500"}
                                           href={profile.link}>{profile.link}</a></TableCell>
                             <TableCell><Avatar>
@@ -78,7 +85,13 @@ function HomePage() {
                   <TableBody>
                       {sharedProfiles && sharedProfiles.length !== 0 ? (sharedProfiles.map(profile =>
                         <TableRow key={"shared-" + profile.link}>
-                            <TableCell>{getNameFromLink(profile.link)}</TableCell>
+                            {/*the whole table cell (only text and icon is) is not clickable, so we need to modify the component to allow for clickable cell*/}
+                            {/*Its also strange how we have the profile, but then have to regather the profile. maybe we can set some cookies/local storage so no duplicate get?*/}
+                            <TableCell>
+                                <Link to={`profile/${profile.id}`}><SquareArrowOutUpRight
+                                  className={"inline mr-2"} />{getNameFromLink(profile.link)}
+                                </Link>
+                            </TableCell>
                             <TableCell><a target={"_blank"} className={"underline text-blue-500"}
                                           href={profile.link}>{profile.link}</a></TableCell>
                             <TableCell>

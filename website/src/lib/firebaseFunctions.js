@@ -1,7 +1,9 @@
+// this file may potentially become enormously large. Splitting up into
+// files for users, profiles, signin/signout may be needed later on
 import { initializeApp } from "firebase/app";
 import firebaseConfig from "@/fireBaseConfig.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { collection, getDocs, getFirestore, query, where } from "firebase/firestore";
+import { collection, getDocs, getDoc, getFirestore, query, where, doc } from "firebase/firestore";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -34,7 +36,7 @@ export async function getUserProfiles(user) {
         return null;
     }
     const q = query(collection(db, "profiles"), where("adderEmail", "==", user.email));
-    return (await getDocs(q)).docs.map((doc) => doc.data());
+    return (await getDocs(q)).docs.map((doc) => ({ ...doc.data(), id: doc.id }));
 }
 
 export async function getSharedProfiles(user) {
@@ -43,5 +45,35 @@ export async function getSharedProfiles(user) {
         return null;
     }
     const q = query(collection(db, "profiles"), where("sharedWith", "array-contains", user.email));
-    return (await getDocs(q)).docs.map((doc) => doc.data());
+    return (await getDocs(q)).docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+}
+
+export async function getUserFromId(id) {
+    if (!id) {
+        console.error("id not defined", id);
+        return;
+    }
+
+    const docRef = doc(db, "users", id);
+    if (!docRef) {
+        console.error("Could not find user");
+        return;
+    }
+
+    return (await getDoc(docRef)).data();
+}
+
+export async function getProfileFromId(id) {
+    if (!id) {
+        console.error("id not defined", id);
+        return;
+    }
+
+    const docRef = doc(db, "profiles", id);
+    if (!docRef) {
+        console.error("Could not find profile");
+        return;
+    }
+
+    return (await getDoc(docRef)).data();
 }

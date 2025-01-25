@@ -1,11 +1,15 @@
 import { BrowserRouter, Routes, Route } from "react-router";
 import HomePage from "@/pages/HomePage.jsx";
-import Contact from "@/pages/Contact.jsx";
+import ContactPage from "@/pages/ContactPage.jsx";
 import Nav from "@/components/Nav.jsx";
+import UserPage from "@/pages/UserPage.jsx";
+import ProfilePage from "@/pages/ProfilePage.jsx";
 
 function Router() {
     const routes = [{ path: "/", component: <HomePage /> },
-        { path: "/contact", component: <Contact /> }];
+        { path: "/contact", component: <ContactPage /> },
+        { path: "/user/:userId", component: <UserPage /> },
+        { path: "/profile/:profileId", component: <ProfilePage /> }];
     return (
       <BrowserRouter>
           <Routes>
