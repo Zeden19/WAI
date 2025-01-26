@@ -6,7 +6,6 @@ import {getLoggedInUser} from "@/lib/firebaseFunctions.js";
 const useGlobalStore = create((set) => ({
     user: getLoggedInUser() ?? undefined,
     selectedProfile: undefined,
-    selectedUser: undefined,
 
     setUser: (newUser) => set((state) => ({ user: newUser })),
     setSelectedProfile: (newSelectedProfile) => set((state) => ({ selectedProfile: newSelectedProfile })),

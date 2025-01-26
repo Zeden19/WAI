@@ -48,21 +48,6 @@ export async function getSharedProfiles(user) {
     return (await getDocs(q)).docs.map((doc) => ({ ...doc.data(), id: doc.id }));
 }
 
-export async function getUserFromId(id) {
-    if (!id) {
-        console.error("id not defined", id);
-        return;
-    }
-
-    const docRef = doc(db, "users", id);
-    if (!docRef) {
-        console.error("Could not find user");
-        return;
-    }
-
-    return (await getDoc(docRef)).data();
-}
-
 export async function getProfileFromId(id) {
     if (!id) {
         console.error("id not defined", id);

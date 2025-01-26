@@ -17,7 +17,6 @@ function ProfilePage() {
     return (
       <>
           {profileOnPage ? (`page for ${getNameFromLink(profileOnPage.link)}`) : "no data"}
-
       </>
     );
 }

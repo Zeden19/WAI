@@ -5,7 +5,6 @@ function UserPage() {
     return (
       <>
           {userOnPage ? (`page for ${userOnPage.email}`) : "no data"}
-
       </>
     );
 }

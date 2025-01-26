@@ -10,6 +10,7 @@ function Router() {
         { path: "/contact", component: <ContactPage /> },
         { path: "/user/:userId", component: <UserPage /> },
         { path: "/profile/:profileId", component: <ProfilePage /> }];
+
     return (
       <BrowserRouter>
           <Routes>

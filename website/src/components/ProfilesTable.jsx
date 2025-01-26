@@ -31,13 +31,14 @@ function ProfilesTable({ profiles, shareProfiles }) {
                         setSelectedProfile(profile)
                         navigate(`/profile/${profile.id}`)
                     }}>
-                        {/*still strange how we have the profile and then retrieve it AGAIN*/}
                         <SquareArrowOutUpRight
                           className={"inline mr-2"} />
                         {getNameFromLink(profile.link)}
                     </TableCell>
-                    <TableCell><a target={"_blank"} className={"underline text-blue-500"}
-                                  href={profile.link}>{profile.link}</a></TableCell>
+                    <TableCell>
+                        <a target={"_blank"} className={"underline text-blue-500"}
+                                  href={profile.link}>{profile.link}</a>
+                    </TableCell>
                     <TableCell>
                         <Avatar>
                             <AvatarImage src={profile.imageURL} />
