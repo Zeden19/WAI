@@ -1,17 +1,7 @@
-import { useParams } from "react-router";
-import { getUserFromId as getUserFromIdDB } from "@/lib/firebaseFunctions.js";
-import { useEffect, useState } from "react";
+import useGlobalStore from "@/store.js";
 
 function UserPage() {
-    const { userId } = useParams();
-    const [userOnPage, setUserOnPage] = useState(null);
-
-    useEffect(() => {
-        async function getUserFromId() {
-            setUserOnPage(await getUserFromIdDB(userId));
-        }
-        getUserFromId();
-    }, []);
+    const userOnPage = useGlobalStore(state => state.user);
     return (
       <>
           {userOnPage ? (`page for ${userOnPage.email}`) : "no data"}

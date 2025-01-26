@@ -6,15 +6,16 @@ import {
     DropdownMenuLabel, DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu.tsx";
-import { getLoggedInUser, signIn as signInWithGoogle, signOut as signOutFromGoogle } from "@/lib/firebaseFunctions.js";
-import { useState } from "react";
+import {signIn as signInWithGoogle, signOut as signOutFromGoogle } from "@/lib/firebaseFunctions.js";
 import { toast } from "sonner";
 import { NavLink, Outlet } from "react-router";
 import { Link } from "react-router";
+import useGlobalStore from "@/store.js";
 
 
 function Nav() {
-    const [user, setUser] = useState(getLoggedInUser);
+    const user = useGlobalStore((state) => state.user);
+    const setUser = useGlobalStore((state) => state.setUser);
 
     async function signIn() {
         const result = await signInWithGoogle();
@@ -28,10 +29,9 @@ function Nav() {
 
     function signOut() {
         signOutFromGoogle();
-        setUser(null);
+        setUser(undefined);
         toast.success("Successfully signed out");
     }
-
 
     return (
       <>

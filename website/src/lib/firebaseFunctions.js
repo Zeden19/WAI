@@ -31,7 +31,7 @@ export function getLoggedInUser() {
 }
 
 export async function getUserProfiles(user) {
-    if (!user.email) {
+    if (!user) {
         console.error("user not defined", user);
         return null;
     }
@@ -40,7 +40,7 @@ export async function getUserProfiles(user) {
 }
 
 export async function getSharedProfiles(user) {
-    if (!user.email) {
+    if (!user) {
         console.error("User not defined", user);
         return null;
     }
