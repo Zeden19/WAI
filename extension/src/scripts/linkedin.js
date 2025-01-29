@@ -2,9 +2,8 @@ import { mainRenderer, mainUnRenderer } from "./mainRenderer";
 import { getLoggedInUser } from "../backgroundTasks/utils";
 
 // Inject the CSS
-const components =
-    chrome.runtime.getManifest().web_accessible_resources[0].resources;
-(async () => {
+const components = chrome.runtime.getManifest().web_accessible_resources[0].resources;
+const func = async () => {
     for (const component of components) {
         if (component.includes("global.css")) {
             const styleSheet = document.createElement("link");
@@ -24,7 +23,9 @@ const components =
             document.head.appendChild(styleTag);
         });
     }
-})();
+};
+
+func()
 
 // in case we start on a profile page
 if (window.location.href.startsWith("https://www.linkedin.com/in/")) {
