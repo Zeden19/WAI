@@ -6,3 +6,5 @@ dist
 .idea/
 node_modules/
 ./dist
+
+ARCHIVE/

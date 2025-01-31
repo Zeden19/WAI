@@ -1,6 +1,6 @@
 import "./App.css";
 import FirebaseOffscreen from "@/components/FirebaseOffscreen.jsx";
-import { ThemeProvider } from "@/components/ui/theme-provider.tsx";
+import { ThemeProvider } from "@/components/ui/theme-provider.jsx";
 import { Toaster } from "sonner";
 
 function App({ children }) {

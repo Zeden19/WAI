@@ -5,7 +5,7 @@ import {
     DropdownMenuContent, DropdownMenuItem,
     DropdownMenuLabel, DropdownMenuSeparator,
     DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu.tsx";
+} from "@/components/ui/dropdown-menu.jsx";
 import {signIn as signInWithGoogle, signOut as signOutFromGoogle } from "@/lib/firebaseFunctions.js";
 import { toast } from "sonner";
 import { NavLink, Outlet } from "react-router";

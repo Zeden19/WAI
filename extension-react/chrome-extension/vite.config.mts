@@ -42,7 +42,7 @@ export default defineConfig({
     rollupOptions: {
       external: ['chrome'],
       input: {
-        main: resolve(__dirname, 'index.html'),
+        //main: resolve(__dirname, 'index.html'),
         offscreen: resolve(__dirname, 'public/offscreen.html'),
       },
     },

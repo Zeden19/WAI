@@ -1,13 +1,13 @@
 import { Moon, Sun } from "lucide-react"
 
-import { Button } from "@/components/ui/button.tsx"
+import { Button } from "@/components/ui/button.jsx"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu.tsx"
-import { useTheme } from "@/components/ui/theme-provider.tsx"
+} from "@/components/ui/dropdown-menu.jsx"
+import { useTheme } from "@/components/ui/theme-provider.jsx"
 
 export function ModeToggle() {
   const { setTheme } = useTheme()

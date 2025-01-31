@@ -1,3 +1,4 @@
+
 import 'webextension-polyfill';
 import { exampleThemeStorage } from '@extension/storage';
 import { doc, setDoc } from 'firebase/firestore';
@@ -163,3 +164,4 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(async function (
     });
   }
 });
+
