@@ -1,3 +1,4 @@
+
 // This URL must point to the public site
 const _URL = 'https://wai-finance.web.app/';
 const iframe = document.createElement('iframe');

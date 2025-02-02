@@ -2,17 +2,18 @@
 import 'webextension-polyfill';
 import { exampleThemeStorage } from '@extension/storage';
 import { doc, setDoc } from 'firebase/firestore';
-import { getEmailList, removeShareProfile, setShareProfile } from '../resources/shareUsers';
-import { setLinkedInProfile, deleteLinkedinProfile, getLinkedInProfile } from '../resources/profiles';
-import { getNotesProfileList, setNote, deleteNote, newNote, updateNote } from '../resources/notes';
-import db from '../firebase';
+import { getEmailList, removeShareProfile, setShareProfile } from './shareUsers';
+import { setLinkedInProfile, deleteLinkedinProfile, getLinkedInProfile } from './profiles';
+import { getNotesProfileList, setNote, deleteNote, newNote, updateNote } from './notes';
+import db from './firebase';
+
 
 const OFFSCREEN_DOCUMENT_PATH: string = '/offscreen.html';
 
 let creating: Promise<void> | null = null;
 
 async function hasDocument() {
-  // @ts-ignore dont touch this undefined thing lmao
+  //@ts-ignore dont touch this undefined thing lmao
   const matchedClients = await clients.matchAll();
   return matchedClients.some((c: any) => c.url === chrome.runtime.getURL('offscreen.html'));
 }
@@ -76,6 +77,7 @@ async function firebaseAuth(): Promise<any> {
 const handleSignIn = async (sendResponse: (response: any) => void): Promise<void> => {
   try {
     const response = await firebaseAuth();
+
     if (!response || !response.user) {
       console.error('Authentication failed or user data is missing.');
       sendResponse({ error: 'Authentication failed' });
@@ -104,12 +106,17 @@ const handleSignIn = async (sendResponse: (response: any) => void): Promise<void
   }
 };
 
+
 chrome.runtime.onMessage.addListener(
   (request: any, sender: chrome.runtime.MessageSender, sendResponse: (response: any) => void) => {
+
+    console.log("Hdfkladjsl;kfjkasdjfaskldjf;aksldfj;as")
     switch (request.message) {
+      
       case 'signIn':
         handleSignIn(sendResponse);
         break;
+      
       case 'hasAddedLink':
         getLinkedInProfile(sendResponse);
         break;

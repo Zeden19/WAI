@@ -44,8 +44,7 @@ const Popup = () => {
         </div>
       )}
       <button
-        onClick={handleSignin}
-        //onClick={isSignedIn ? handleSignout : handleSignin}
+        onClick={isSignedIn ? handleSignout : handleSignin}
         className="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition duration-300">
         {isSignedIn ? 'Sign Out' : 'Sign In'}
       </button>

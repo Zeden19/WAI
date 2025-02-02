@@ -1,5 +1,5 @@
 import { arrayRemove, arrayUnion, collection, doc, getDocs, updateDoc } from 'firebase/firestore';
-import db from '../firebase';
+import db from './firebase';
 import { getCurrentTabUrl, getLoggedInUser } from './utils';
 import { getLinkedInProfile } from './profiles';
 import { send } from 'vite';

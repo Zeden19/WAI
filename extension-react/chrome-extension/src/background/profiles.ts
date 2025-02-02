@@ -1,5 +1,5 @@
 import { addDoc, and, collection, deleteDoc, doc, getDoc, getDocs, or, query, where } from 'firebase/firestore';
-import db from '../firebase';
+import db from './firebase';
 import { getCurrentTabUrl, getLoggedInUser } from './utils';
 import { setNote } from './notes';
 import { send } from 'vite';

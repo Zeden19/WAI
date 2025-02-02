@@ -10,6 +10,14 @@ const srcDir = resolve(rootDir, 'src');
 
 const outDir = resolve(rootDir, '..', 'dist');
 export default defineConfig({
+  /*
+
+  small temp fix for if local storage doesn't work according to this link
+  https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite/issues/510
+  define: {
+    'process.env.NODE_ENV': `"production"`,
+  },
+  */
   resolve: {
     alias: {
       '@root': rootDir,
@@ -29,7 +37,7 @@ export default defineConfig({
   build: {
     lib: {
       formats: ['iife'],
-      entry: resolve(__dirname, 'src/background/index.ts'),
+      entry: resolve(__dirname, './src/background/index.ts'),
       name: 'BackgroundScript',
       fileName: 'background',
     },
@@ -41,10 +49,7 @@ export default defineConfig({
     watch: watchOption,
     rollupOptions: {
       external: ['chrome'],
-      input: {
-        //main: resolve(__dirname, 'index.html'),
-        offscreen: resolve(__dirname, 'public/offscreen.html'),
-      },
+      
     },
   },
   envDir: '../',

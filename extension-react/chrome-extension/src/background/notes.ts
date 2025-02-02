@@ -11,7 +11,7 @@ import {
   QuerySnapshot,
   DocumentData,
 } from 'firebase/firestore';
-import db from '../firebase';
+import db from './firebase';
 import { getLinkedInProfile } from './profiles';
 
 const profilesRef = collection(db, 'profiles');
